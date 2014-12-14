@@ -102,4 +102,21 @@ body {
 }
 
 
+#map {
+  height: 500px;
+}
 
+#map-wrapper, #results-wrapper {
+  padding: 1%;
+  background: #fff;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-box-shadow: 2px 2px 5px rgba(88, 88, 88, 0.5);
+  -webkit-box-shadow: 2px 2px 5px rgba(88, 88, 88, 0.5);
+}
+
+.has-cols #map-wrapper,
+.has-cols #results-wrapper {
+  width: 47.5%;
+}

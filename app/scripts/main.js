@@ -4,6 +4,8 @@ var cnt = 1;
 
 $(document).ready(function(){
 
+	// google.maps.event.addDomListener(window, 'load', init);
+
 	// multiple prefixes
 	var next = 1;
     $(".add-more").click(function(e){

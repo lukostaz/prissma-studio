@@ -15,6 +15,7 @@
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
+  <!-- <link rel="stylesheet" href="styles/map.css"> -->
 </head>
 <body>
     <!--[if lt IE 10]>
@@ -63,6 +64,19 @@
 
             <!-- user-defined prefixes -->
             <input type="hidden" name="count-user-prefixes" value="1" />
+            <label class="control-label" >User-defined prefixes</label>
+            <div class="input-group" id="fields-prefixes">
+               
+               <input type="text" class="form-control" id="profs">
+               <span class="input-group-btn">
+                    <button id="b1" class="btn add-more">+</button>
+               </span>
+
+            </div>
+
+
+<!-- 
+
             <div class="control-group" id="fields-prefixes">
                 <label class="control-label" for="field-prefix-1">User-defined prefixes</label>
                 <div class="controls" id="profs"> 
@@ -70,7 +84,7 @@
                     <input autocomplete="off" class="form-inline form-prefix" id="field-prefix-1" name="prof1" type="text" placeholder="Type something" data-items="8"/><button id="b1" class="btn add-more">+</button>
                   </div>
                 </div>
-            </div>
+            </div> -->
           </div>
 
 
@@ -80,7 +94,15 @@
           <div class="col-lg-10 prism-block">
             <h3>Lenses</h3>
             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et</p>
+          
+
+
+
+
+
           </div>
+
+
 
 
 
@@ -158,7 +180,24 @@
                           </div>
                         </div>
                     </div>
+
+                    <!-- google map -->
+                   <div>
+                      <label>Activate Prism within <span id="dist"></span> km
+                      <span id="of"></span></label>
+                    </div>
+                  <div id="map-wrapper" >
+                    <div id="map"></div>
+                  </div>
+                <!-- google map end -->
+                    
                 </div> 
+
+
+                
+
+
+
               </div><!-- panel user -->
             </div> <!-- div wrap panel user -->
 
@@ -219,6 +258,9 @@
     <script src="bower_components/bootstrap/js/tab.js"></script>
     <script src="scripts/n3-browser.js"></script>
     <script src="scripts/bootstrap-tagsinput.min.js"></script>
+    <script src="//www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:''}]}"></script>
+    <script src="scripts/distancewidget.js"></script>
+    <script src="scripts/map.js"></script>
     
     <!-- endbuild -->
 
