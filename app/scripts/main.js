@@ -4,8 +4,6 @@ var cnt = 1;
 
 $(document).ready(function(){
 
-	// google.maps.event.addDomListener(window, 'load', init);
-
 	// multiple prefixes
 	var next = 1;
     $(".add-more").click(function(e){
@@ -30,6 +28,12 @@ $(document).ready(function(){
                 $(fieldID).remove();
             });
     });
+
+
+
+	// date and time
+	$('#datetimepicker-date').datetimepicker({pickTime: false});
+	$('#datetimepicker-time').datetimepicker({pickDate: false});
 
 
 

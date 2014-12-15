@@ -159,8 +159,8 @@
                         </div>
                     </div>
                 </div> 
-              </div><!-- panel user -->
-            </div> <!-- div wrap panel user -->
+              </div><!-- panel Device -->
+            </div> <!-- div wrap panel Device -->
 
 
             <!-- Environment -->
@@ -170,20 +170,14 @@
                   <h3 class="panel-title">Environment</h3>
                 </div>
                 <div class="panel-body">
-                  <p>Environment models the user context in which the resource consumption takes place.</p>
-                  <input type="hidden" name="count-devprop" value="1" />
-                    <div class="control-group" id="fields-devprop">
-                        <label class="control-label" for="field-devprop-1">Device Properties</label>
-                        <div class="controls" id="profs"> 
-                          <div id="field-devprop-">
-                            <input class="form-inline form-prefix" id="field-devprop-1" name="prof1" type="text" placeholder="foaf:knows <http://example.org#john.me>"/><button id="b-devprop-1" class="btn add-more">+</button>
-                          </div>
-                        </div>
-                    </div>
+                  <p>Environment models the user phisycal world in which the resource consumption takes place.</p>
+                 
+                
 
                     <!-- google map -->
+                   <br/>
                    <div>
-                      <label>Activate Prism within <span id="dist"></span> km
+                      <label>Activate Prism within <span id="dist"></span> km</label>
                       <span id="of"></span></label>
                     </div>
                   <div id="map-wrapper" >
@@ -191,15 +185,107 @@
                   </div>
                 <!-- google map end -->
                     
-                </div> 
+
+                <!-- place type and label -->
+                <hr/>
+                <div class="form-group col-lg-12">
+                    <label for="inputName">Place Category</label>
+                    <input type="text" class="form-control" id="inputPOICat" placeholder='Museum'/>
+                </div>
+                <div class="form-group col-lg-12">
+                    <label for="inputName">Place Label</label>
+                    <input type="text" class="form-control" id="inputPOIName" placeholder='Louvre Museum'/>
+                </div>
 
 
-                
+
+                  <!-- date and time -->
+                  <br/>
+                  <div class="col-lg-12">
+                    <label>Start</label>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker-date-start'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker-time-start'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                            </span>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <label>End</label>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker-date-end'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker-time-end'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                            </span>
+                        </div>
+                    </div>
+                  </div>
+                  <!-- <div class="form-group col-lg-12">
+                    <label for="inputName">Duration (minutes)</label>
+                    <input type="number" class="form-control" id="inputName" placeholder='30'/>
+                  </div> -->
+
+
+                  <!-- Activities -->
+                  <div class="col-lg-12">
+                   <input type="hidden" name="count-user-prefixes" value="1" />
+                    <label class="control-label"> Activities</label>
+                    <div class="input-group" id="fields-prefixes">
+                       <input type="text" class="form-control" id="profs" placeholder='Working'>
+                       <span class="input-group-btn">
+                            <button id="b1" class="btn add-more">+</button>
+                       </span>
+                    </div>
+                    </div>
+
+                    <!-- motion -->
+                    <div class="checkbox col-lg-12">
+                      <label>
+                        <input type="checkbox"> Motion
+                      </label>
+                    </div>
 
 
 
-              </div><!-- panel user -->
-            </div> <!-- div wrap panel user -->
+                    <!-- Nearby entities -->
+                    <div class="col-lg-12">
+                     <input type="hidden" name="count-user-prefixes" value="1" />
+                      <label class="control-label"> Nearby Entities</label>
+                      <div class="input-group" id="fields-prefixes">
+                         <input type="url" class="form-control" id="profs" placeholder='http://example.org#john-doe'>
+                         <span class="input-group-btn">
+                              <button id="b1" class="btn add-more">+</button>
+                         </span>
+                      </div>
+                    </div>
+
+
+
+              </div><!-- panel env -->
+            </div> <!-- div wrap panel env -->
 
           </div>
 
@@ -229,7 +315,7 @@
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/jquery/jquery.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -256,11 +342,13 @@
     <script src="bower_components/bootstrap/js/scrollspy.js"></script>
     <script src="bower_components/bootstrap/js/collapse.js"></script>
     <script src="bower_components/bootstrap/js/tab.js"></script>
+    <script src="bower_components/moment/min/moment.min.js"></script>
     <script src="scripts/n3-browser.js"></script>
     <script src="scripts/bootstrap-tagsinput.min.js"></script>
     <script src="//www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:''}]}"></script>
     <script src="scripts/distancewidget.js"></script>
     <script src="scripts/map.js"></script>
+    <script type="text/javascript" src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/master/src/js/bootstrap-datetimepicker.js"></script>
     
     <!-- endbuild -->
 

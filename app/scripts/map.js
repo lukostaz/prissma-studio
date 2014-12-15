@@ -7,15 +7,15 @@ var profileMarkers = [];
 function init() {
   var mapDiv = document.getElementById('map');
   map = new google.maps.Map(mapDiv, {
-    center: new google.maps.LatLng(37.790234970864, -122.39031314844),
+    center: new google.maps.LatLng(48.860773, 2.337306),
     zoom: 8,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
   distanceWidget = new DistanceWidget({
     map: map,
-    distance: 50, // Starting distance in km.
-    maxDistance: 2500, // Twitter has a max distance of 2500km.
+    distance: .2, // Starting distance in km.
+    maxDistance: 100, // Twitter has a max distance of 2500km.
     color: '#000000',
     activeColor: '#5599bb',
     sizerIcon: 'images/resize-off.png',
