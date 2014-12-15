@@ -127,7 +127,36 @@
                 </div>
                 <div class="panel-body">
                   <p>Represents the target mobile user associated to a Context. To provide more flexibility, the class can be used to model both user stereotypes and specific users, according to the designer needs. The class is equivalent to foaf:Person</p>
-                  <input type="hidden" name="count-usrprop" value="1" />
+
+                  <div class="form-group">
+                    <label>User profile URI</label>
+                    <input type="uri" class="form-control" id="inputUseURI" placeholder='http://example.org#john-doe'/>
+                  </div>
+                  <div class="form-group">
+                    <label>First name</label>
+                    <input type="text" class="form-control" id="inputUserFirstName" placeholder='John'/>
+                  </div>
+                  <div class="form-group">
+                    <label>Last name</label>
+                    <input type="text" class="form-control" id="inputUserFirstName" placeholder='Doe'/>
+                  </div>
+
+
+
+
+                  <!-- Interests -->  
+                  <div class="form-group">
+                    <label>Interests</label>
+                    <input type="text" data-role="tagsinput" class="form-control" id="inputInterests" placeholder='Cinema'/>
+                  </div>
+
+
+
+
+
+
+
+                  <!-- <input type="hidden" name="count-usrprop" value="1" />
                     <div class="control-group" id="fields-usrprop">
                         <label class="control-label" for="field-usrprop-1">User Properties</label>
                         <div class="controls" id="profs"> 
@@ -135,7 +164,7 @@
                             <input class="form-inline form-prefix" id="field-usrprop-1" name="prof1" type="text" placeholder="foaf:knows <http://example.org#john.me>"/><button id="b-usrprop-1" class="btn add-more">+</button>
                           </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div> 
               </div><!-- panel user -->
             </div> <!-- div wrap panel user -->
@@ -149,15 +178,29 @@
                 </div>
                 <div class="panel-body">
                   <p>The Device represents the mobile device on which Web of Data resource consumption takes place. It enables device-specific data representation.</p>
-                  <input type="hidden" name="count-devprop" value="1" />
-                    <div class="control-group" id="fields-devprop">
-                        <label class="control-label" for="field-devprop-1">Device Properties</label>
-                        <div class="controls" id="profs"> 
-                          <div id="field-devprop-">
-                            <input class="form-inline form-prefix" id="field-devprop-1" name="prof1" type="text" placeholder="foaf:knows <http://example.org#john.me>"/><button id="b-devprop-1" class="btn add-more">+</button>
-                          </div>
-                        </div>
+                 
+
+                  <div class="form-group">
+                    <label for="inputName">Operation System</label>
+                    <input type="text" class="form-control" id="inputName" placeholder='Android 4.4.4'/>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputName">Model</label>
+                    <input type="text" class="form-control" id="inputName" placeholder='Nexus 5'/>
+                  </div>
+
+                  <!-- Others dev -->  
+                   <input type="hidden" name="" value="1" />
+                    <label class="control-label"> Other Properties</label>
+                    <div class="input-group" id="fields-prefixes">
+                       <input type="url" class="form-control" id="profs" placeholder=''>
+                       <span class="input-group-btn">
+                            <button id="b1" class="btn add-more">+</button>
+                       </span>
                     </div>
+                    
+
                 </div> 
               </div><!-- panel Device -->
             </div> <!-- div wrap panel Device -->
@@ -272,7 +315,7 @@
 
                     <!-- Nearby entities -->
                     <div class="col-lg-12">
-                     <input type="hidden" name="count-user-prefixes" value="1" />
+                     <input type="hidden" name="" value="1" />
                       <label class="control-label"> Nearby Entities</label>
                       <div class="input-group" id="fields-prefixes">
                          <input type="url" class="form-control" id="profs" placeholder='http://example.org#john-doe'>
@@ -315,7 +358,7 @@
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -344,7 +387,7 @@
     <script src="bower_components/bootstrap/js/tab.js"></script>
     <script src="bower_components/moment/min/moment.min.js"></script>
     <script src="scripts/n3-browser.js"></script>
-    <script src="scripts/bootstrap-tagsinput.min.js"></script>
+    <script src="bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
     <script src="//www.google.com/jsapi?autoload={'modules':[{name:'maps',version:3,other_params:''}]}"></script>
     <script src="scripts/distancewidget.js"></script>
     <script src="scripts/map.js"></script>
