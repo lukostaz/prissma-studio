@@ -121,3 +121,14 @@ body {
   width: 47.5%;
 }
 
+
+.bootstrap-tagsinput {
+    width: 100%;
+}
+.label {
+    line-height: 2 !important;
+}
+
+.interest-group{
+  margin-top: 20px;
+}

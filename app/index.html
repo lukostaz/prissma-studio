@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
   <!-- <link rel="stylesheet" href="styles/map.css"> -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.css" />
 </head>
 <body>
     <!--[if lt IE 10]>
@@ -141,18 +142,47 @@
                     <input type="text" class="form-control" id="inputUserFirstName" placeholder='Doe'/>
                   </div>
 
+                  <div class="form-group">
+                    <label>Organization</label>
+                    <input type="text" class="form-control" id="inputUserFirstName" placeholder='Doe'/>
+                  </div>
 
+
+                  <div class="form-group">
+                  <label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="isMaleRadio" value="true"> M
+                  </label>
+                  <label class="radio-inline">
+                    <input type="radio" name="inlineRadioOptions" id="isFemaleRadio" value="true"> F
+                  </label>
+                  </div>
+                  
+                  <div class="form-group row">
+                  <div class="col-lg-2">  
+                    <label for="usr">Age</label>
+                    <input type="number" class="form-control" id="usr" 
+                    min="0" data-bv-greaterthan-inclusive="true" max="130" data-bv-lessthan-inclusive="false">
+                  </div>
+                  </div>
 
 
                   <!-- Interests -->  
-                  <div class="form-group">
-                    <label>Interests</label>
-                    <input type="text" data-role="tagsinput" class="form-control" id="inputInterests" placeholder='Cinema'/>
+                  <div class="form-group interest-group">
+                    <label>Interests (press enter to add multiple items)</label>
+                    <input type="text" data-role="tagsinput" class="form-inline" id="inputInterests"/>
                   </div>
 
 
 
-
+                  <!-- knows -->  
+                   <input type="hidden" name="" value="1" />
+                    <label class="control-label"> Knows</label>
+                    <div class="input-group" id="fields-prefixes">
+                       <input type="url" class="form-control" id="profs" placeholder='http://example.org/kate'>
+                       <span class="input-group-btn">
+                            <button id="b1" class="btn add-more">+</button>
+                       </span>
+                    </div>
 
 
 
@@ -358,7 +388,7 @@
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
