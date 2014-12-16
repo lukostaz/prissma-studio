@@ -28,12 +28,15 @@
         
         <div class="header">
           <ul class="nav nav-pills pull-right">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
+            <li>
+              <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+                About
+              </button>
+            </li>
           </ul>
-          <h3 class="text-muted">Prissma Studio</h3>
+          <h3 class="text-muted">PRISSMA Studio</h3>
         </div>
+
 
 
         
@@ -45,7 +48,15 @@
           <!-- General -->
           <div class="col-lg-10 prism-block">
             <h3>General</h3>
-            <p>Fill in the Prism general information.</p>
+            <p>Fill in the Prism general information.
+            Data selection and filtering adopt <a href="http://www.w3.org/2005/04/fresnel-info/manual/#lenscore">Fresnel Lenses</a>.
+            Data styling relies on <a href="http://www.w3.org/2005/04/fresnel-info/manual/#lenscore">Fresnel Formats</a>.</p>
+
+            <div class="alert alert-info alert-dismissible" role="info">
+              <button type="button" class="close" data-dismiss="info"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              <strong>Note:</strong> CURIEs and URIs are both accepted.
+            </div>
+
 
             <div class="form-group">
               <label for="inputBaseURI">Base URI</label>
@@ -68,7 +79,7 @@
                </span>
 
             </div>
-
+      
 
 <!-- 
 
@@ -80,50 +91,89 @@
                   </div>
                 </div>
             </div> -->
+
+
+        <br/>
+         <label>Filtering</label>
+          <div class="col-lg-2 col-lg-offset-11">
+            <button id="b1" class="btn add-more">+</button>
           </div>
-
-
-          
-
-          <!-- Lenses -->
-          <div class="col-lg-10 prism-block">
-            <h3>Lenses</h3>
-            <p>Define data selection and filtering with <a href="http://www.w3.org/2005/04/fresnel-info/manual/#lenscore">Fresnel Lenses</a>.</p>
-          
-
-
-              <!-- Show properties -->  
-              <div class="form-group interest-group">
-                <label for="inputShowProperties">Properties to show (press enter to add multiple items)</label>
-                <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties"/>
-                <div class="alert alert-info alert-dismissible" role="info">
-                  <button type="button" class="close" data-dismiss="info"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                  <strong>Note:</strong> CURIEs and URIs accepted.
-                </div>
-              </div>
-
-
-
-          </div>
-
-
-
-
-
-          <!-- Formats -->
-          <div class="col-lg-10 prism-block">
-            <h3>Formats</h3>
-            <p>Define data styling with with <a href="http://www.w3.org/2005/04/fresnel-info/manual/#lenscore">Fresnel Formats</a></p>
+          <div class="panel panel-default">
+                <div class="panel-body">
+                  
+                  
+                  
+                  <div class="form-group col-lg-6">
+                    <label>Target Class</label>
+                    <input type="uri" class="form-control" id="inputUseURI" placeholder='ex:ClassName'/>
+                  </div>
+                  <div class="form-group col-lg-6">
+                    <label>Target Entity</label>
+                    <input type="uri" class="form-control" id="inputUseURI" placeholder='http://example.org/entity'/>
+                  </div>
+                  <!-- Show properties -->  
+                  <div class="form-group interest-group">
+                    <label for="inputShowProperties">Properties to show (press enter to add multiple items)</label>
+                    <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties"/>
+                  </div>
+                </div> 
+          </div><!-- panel lens -->
           
 
 
-            <div class="form-group">
-              <label for="inputCSS">External CSS</label>
-              <input type="text" class="form-control" id="inputCSS" placeholder="http://example.org/styles/sample.css"/>
+
+          <label>Formatting</label>
+            <div class="col-lg-2 col-lg-offset-11">
+              <button id="b1" class="btn add-more">+</button>
             </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
 
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">Applies to</h4>
+                    </div>
+                    <div class="panel-body">
+                      <div class="form-group col-lg-6">
+                        <label>Property Class</label>
+                        <input type="uri" class="form-control" id="inputUseURI" placeholder='ex:ClassName'/>
+                      </div>
+                      <div class="form-group col-lg-6">
+                        <label>Property Entity</label>
+                        <input type="uri" class="form-control" id="inputUseURI" placeholder='http://example.org/entity'/>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  
+                  
+                  <div class="form-group">
+                    <label for="inputName">Property Label</label>
+                    <input type="text" class="form-control" id="inputName" />
+                  </div>  
+                  <div class="form-group col-lg-6">
+                    <label for="inputName">Property Label CSS class</label>
+                    <input type="text" class="form-control" id="inputName" />
+                  </div>
+                  <div class="form-group col-lg-6">
+                    <label for="inputName">Property Value CSS class</label>
+                    <input type="text" class="form-control" id="inputName" />
+                  </div>
+
+                </div> 
+            </div><!-- panel format -->
+
+
+          <!-- External CSS  -->
+          <div class="form-group">
+            <label for="inputCSS">CSS</label>
+            <input type="text" class="form-control" id="inputCSS" placeholder="http://example.org/styles/sample.css"/>
           </div>
 
+          </div>
+       
+          
 
 
 
@@ -381,8 +431,8 @@
 
           <!-- Submit button -->
           <div class="row">
-          <div class="col-lg-4 col-md-offset-4">
-          <button type="button" id="generateButton" class="btn btn-default">Download Prism</button>
+          <div class="col-lg-4 col-md-offset-3">
+          <button type="button" id="generateButton" class="btn btn-default">Generate and Download Prism</button>
           </div>
           </div>
       
@@ -391,11 +441,29 @@
 
       <div class="row">
       <div class="footer">
-        <p>2014 - The Prissma Project</p>
+        <p>2014 - <a href="http://wimmics.inria.fr/projects/prissma/">The PRISSMA Project</a></p>
       </div>
       </div>
 
     </div>
+
+
+
+    <!-- about box -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">PRISSMA Studio v1.0</h4>
+          </div>
+          <div class="modal-body">
+            Visit the <a href="http://wimmics.inria.fr/projects/prissma/">The PRISSMA Project</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <!-- build:js(.) scripts/vendor.js -->
