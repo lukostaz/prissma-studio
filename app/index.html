@@ -45,7 +45,7 @@
           <!-- General -->
           <div class="col-lg-10 prism-block">
             <h3>General</h3>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et</p>
+            <p>Fill in the Prism general information.</p>
 
             <div class="form-group">
               <label for="inputBaseURI">Base URI</label>
@@ -55,13 +55,7 @@
             <div class="form-group">
               <label for="inputName">Prism Label</label>
               <input type="text" class="form-control" id="inputName" placeholder='Museum when walking in Paris'/>
-            </div>
-
-            <div class="form-group">
-              <label for="inputCSS">External CSS</label>
-              <input type="text" class="form-control" id="inputCSS" placeholder="http://example.org/styles/sample.css"/>
-            </div>
-          
+            </div>          
 
             <!-- user-defined prefixes -->
             <input type="hidden" name="count-user-prefixes" value="1" />
@@ -94,10 +88,19 @@
           <!-- Lenses -->
           <div class="col-lg-10 prism-block">
             <h3>Lenses</h3>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et</p>
+            <p>Define data selection and filtering with <a href="http://www.w3.org/2005/04/fresnel-info/manual/#lenscore">Fresnel Lenses</a>.</p>
           
 
 
+              <!-- Show properties -->  
+              <div class="form-group interest-group">
+                <label for="inputShowProperties">Properties to show (press enter to add multiple items)</label>
+                <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties"/>
+                <div class="alert alert-info alert-dismissible" role="info">
+                  <button type="button" class="close" data-dismiss="info"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  <strong>Note:</strong> CURIEs and URIs accepted.
+                </div>
+              </div>
 
 
 
@@ -110,8 +113,17 @@
           <!-- Formats -->
           <div class="col-lg-10 prism-block">
             <h3>Formats</h3>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et</p>
+            <p>Define data styling with with <a href="http://www.w3.org/2005/04/fresnel-info/manual/#lenscore">Fresnel Formats</a></p>
+          
+
+
+            <div class="form-group">
+              <label for="inputCSS">External CSS</label>
+              <input type="text" class="form-control" id="inputCSS" placeholder="http://example.org/styles/sample.css"/>
+            </div>
+
           </div>
+
 
 
 
