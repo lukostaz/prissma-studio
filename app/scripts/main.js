@@ -43,6 +43,9 @@ $(document).ready(function(){
 	// Generate .ttl file
 	$("#generateButton").click(function() {
 
+
+		var writer = N3.Writer();
+
 		var prismName = $("#inputName").val();
 		
 		var baseURI = $("#inputBaseURI").val();
@@ -51,15 +54,33 @@ $(document).ready(function(){
 		
 		var prismURI = baseURI + '#prism-' + cnt;
 		var ctxURI = baseURI + '#ctx-prism-' + cnt;
+		var usrURI = $("#inputUserURI").val();
+		if (! usrURI)
+			usrURI = baseURI + '#usr-prism-' + cnt;
+		var devURI = baseURI + '#dev-prism-' + cnt;
+		var envURI = baseURI + '#env-prism-' + cnt;
 		var stylesheetLink = $("#inputCSS").val();
 
 
-		
-		
+		// read user prefixes
+		var userPrefixes = $("#inputPrefixes").tagsinput('items');
+		for (var i = 0; i < userPrefixes.length; i++) {
+		   var tokens = userPrefixes[i].split(" ");
+		   writer.addPrefix(tokens[0], tokens[1]);
+		}
+	
+
+		//TODO: lenses and formats
 
 
-		var writer = N3.Writer();
-		
+
+
+
+		//dev
+
+
+
+
 		// add prefixes
 		writer.addPrefix('rdfs', 'http://www.w3.org/2000/01/rdf-schema#');
 		writer.addPrefix('prissma', 'http://ns.inria.fr/prissma/v2#');
@@ -82,6 +103,7 @@ $(document).ready(function(){
 		if (stylesheetLink)
 		writer.addTriple(prismURI, 'http://www.w3.org/2004/09/fresnel#stylesheetLink', stylesheetLink);		
 
+		
 
 		// add triples: lenses
 
@@ -90,11 +112,52 @@ $(document).ready(function(){
 
 
 		// add triples: ctx
-		writer.addTriple(prismURI, 'http://www.w3.org/2004/09/fresnel#purpose', ctxURI);		
+		writer.addTriple(prismURI, 'http://www.w3.org/2004/09/fresnel#purpose', ctxURI);
+		writer.addTriple(ctxURI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://ns.inria.fr/prissma/v2#Context');
+		writer.addTriple(ctxURI, 'http://ns.inria.fr/prissma/v2#user', usrURI);
+		writer.addTriple(ctxURI, 'http://ns.inria.fr/prissma/v2#device', devURI);
+		writer.addTriple(ctxURI, 'http://ns.inria.fr/prissma/v2#environment', envURI);
+		writer.addTriple(usrURI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://ns.inria.fr/prissma/v2#User');
+		writer.addTriple(devURI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://ns.inria.fr/prissma/v2#Device');
+		writer.addTriple(envURI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://ns.inria.fr/prissma/v2#Environment');
+
+
+
+
 		
+		// usr
+		var inputUserFirstName = $("#inputUserFirstName").val(); 
+		var inputUserLastName = $("#inputUserLastName").val(); 
+		var inputUserOrganization = $("#inputUserOrganization").val(); 
+		
+		var isMale = $("#isMaleRadio").val();
+		var isFemale = $("#isFemaleRadio").val();
+		var gender;
+		if (isMale == 'true')
+			gender = 'male'
+		if (isFemale == 'true')
+			gender = 'female'
 
+		var age = $("#inputAge").val();
 
+		var interests = $("#inputInterests").tagsinput('items');
+		for (var i = 0; i < interests.length; i++) {
+		   writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/interest', interests[i]);
+		}
 
+		var knows = $("#inputKnows").tagsinput('items');
+		for (var i = 0; i < knows.length; i++) {
+		   writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/knows', knows[i]);
+		}
+
+		
+		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/givenName', inputUserFirstName);
+		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/familyName', inputUserLastName);
+		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/gender', gender);
+		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/member', inputUserOrganization);
+		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/age', age);
+		
+		
 
 
 
