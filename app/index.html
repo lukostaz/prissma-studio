@@ -69,20 +69,15 @@
             </div>          
 
             <!-- user-defined prefixes -->
-            <input type="hidden" name="count-user-prefixes" value="1" />
-            <label class="control-label" >User-defined prefixes</label>
-            <div class="input-group" id="fields-prefixes">
-               
-               <input type="text" class="form-control" id="profs">
-               <span class="input-group-btn">
-                    <button id="b1" class="btn add-more">+</button>
-               </span>
-
+            <div class="form-group interest-group">
+                    <label>User-defined prefixes (press <kbd>enter</kbd> to add multiple items)</label>
+                    <input type="text" data-role="tagsinput" class="form-inline" id="inputPrefixes" placeholder='prefix http://example.org/vocab'/>
             </div>
+            
       
 
 <!-- 
-
+            <input type="hidden" name="count-user-prefixes" value="1" />
             <div class="control-group" id="fields-prefixes">
                 <label class="control-label" for="field-prefix-1">User-defined prefixes</label>
                 <div class="controls" id="profs"> 
@@ -113,7 +108,7 @@
                   </div>
                   <!-- Show properties -->  
                   <div class="form-group interest-group">
-                    <label for="inputShowProperties">Properties to show (press enter to add multiple items)</label>
+                    <label for="inputShowProperties">Properties to show (press <kbd>enter</kbd> to add multiple items)</label>
                     <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties"/>
                   </div>
                 </div> 
@@ -230,21 +225,17 @@
 
                   <!-- Interests -->  
                   <div class="form-group interest-group">
-                    <label>Interests (press enter to add multiple items)</label>
-                    <input type="text" data-role="tagsinput" class="form-inline" id="inputInterests"/>
+                    <label>Interests (press <kbd>enter</kbd> to add multiple items)</label>
+                    <input placeholder='indie music' type="text" data-role="tagsinput" class="form-inline" id="inputInterests"/>
                   </div>
 
 
 
                   <!-- knows -->  
-                   <input type="hidden" name="" value="1" />
-                    <label class="control-label"> Knows</label>
-                    <div class="input-group" id="fields-prefixes">
-                       <input type="url" class="form-control" id="profs" placeholder='http://example.org/kate'>
-                       <span class="input-group-btn">
-                            <button id="b1" class="btn add-more">+</button>
-                       </span>
-                    </div>
+                  <div class="form-group interest-group">
+                       <label class="control-label"> Knows (press <kbd>enter</kbd> to add multiple items)</label>
+                        <input placeholder='http://example.org/kate' type="text" data-role="tagsinput" class="form-inline" id="inputKnows" placeholder='http://example.org/kate'/>
+                  </div>
 
 
 
@@ -283,14 +274,11 @@
                   </div>
 
                   <!-- Others dev -->  
-                   <input type="hidden" name="" value="1" />
-                    <label class="control-label"> Other Properties</label>
-                    <div class="input-group" id="fields-prefixes">
-                       <input type="url" class="form-control" id="profs" placeholder=''>
-                       <span class="input-group-btn">
-                            <button id="b1" class="btn add-more">+</button>
-                       </span>
-                    </div>
+                  <div class="form-group interest-group">
+                       <label class="control-label"> Other Properties (press <kbd>enter</kbd> to add multiple items)</label>
+                        <input placeholder='property value' type="text" data-role="tagsinput" class="form-inline" id="inputOtherDevProps"/>
+                  </div>
+                   
                     
 
                 </div> 
@@ -386,35 +374,26 @@
 
                   <!-- Activities -->
                   <div class="col-lg-12">
-                   <input type="hidden" name="count-user-prefixes" value="1" />
-                    <label class="control-label"> Activities</label>
-                    <div class="input-group" id="fields-prefixes">
-                       <input type="text" class="form-control" id="profs" placeholder='Working'>
-                       <span class="input-group-btn">
-                            <button id="b1" class="btn add-more">+</button>
-                       </span>
+                    <div class="form-group interest-group">
+                         <label class="control-label"> Activities (press <kbd>enter</kbd> to add multiple items)</label>
+                          <input placeholder='Working' type="text" data-role="tagsinput" class="form-inline" id="inputActivities"/>
                     </div>
-                    </div>
+                   </div>
 
+
+                    <!-- Nearby entities -->
+                    <div class="col-lg-12">
+                     <div class="form-group interest-group">
+                         <label class="control-label"> Nearby Entities (press <kbd>enter</kbd> to add multiple items)</label>
+                          <input placeholder='http://example.org#john-laptop' type="text" data-role="tagsinput" class="form-inline" id="inputNearby"/>
+                    </div>
+                    </div>
+                   
                     <!-- motion -->
                     <div class="checkbox col-lg-12">
                       <label>
                         <input type="checkbox"> Motion
                       </label>
-                    </div>
-
-
-
-                    <!-- Nearby entities -->
-                    <div class="col-lg-12">
-                     <input type="hidden" name="" value="1" />
-                      <label class="control-label"> Nearby Entities</label>
-                      <div class="input-group" id="fields-prefixes">
-                         <input type="url" class="form-control" id="profs" placeholder='http://example.org#john-doe'>
-                         <span class="input-group-btn">
-                              <button id="b1" class="btn add-more">+</button>
-                         </span>
-                      </div>
                     </div>
 
 
