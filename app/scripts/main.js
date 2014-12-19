@@ -1,6 +1,22 @@
 console.log('Prissma Studio started.');
 var cnt = 1;
 
+function isURI(str) {
+  var pattern = new RegExp('^(https?:\/\/)?'+ // protocol
+    '((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|'+ // domain name
+    '((\d{1,3}\.){3}\d{1,3}))'+ // OR ip (v4) address
+    '(\:\d+)?(\/[-a-z\d%_.~+]*)*'+ // port and path
+    '(\?[;&a-z\d%_.~+=-]*)?'+ // query string
+    '(\#[-a-z\d_]*)?$','i'); // fragment locater
+  if(!pattern.test(str)) {
+    alert("Please enter a valid URL.");
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
 
 $(document).ready(function(){
 
@@ -33,11 +49,7 @@ $(document).ready(function(){
 
 	// date and time
 	$('#datetimepicker-date-start').datetimepicker();
-	// $('#datetimepicker-time-start').datetimepicker({pickDate: false});
 	$('#datetimepicker-date-end').datetimepicker();
-	// $('#datetimepicker-time-end').datetimepicker({pickDate: false});
-
-
 
 
 
@@ -146,12 +158,20 @@ $(document).ready(function(){
 
 		var interests = $("#inputInterests").tagsinput('items');
 		for (var i = 0; i < interests.length; i++) {
-		   writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/interest', interests[i]);
+			if (URI.parse(interests[i]))
+		   		var interest = interests[i];
+		   	else
+		   		var interest = '"' + interests[i] + '"';
+		   writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/interest', interest);
 		}
 
 		var knows = $("#inputKnows").tagsinput('items');
 		for (var i = 0; i < knows.length; i++) {
-		   writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/knows', knows[i]);
+			if (URI.parse(knows[i]))
+		   		var know = knows[i];
+		   	else
+		   		var know = '"' + knows[i] + '"';
+		   writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/knows', know);
 		}
 
 		
@@ -198,6 +218,32 @@ $(document).ready(function(){
 		writer.addTriple(timeURI, 'http://purl.org/NET/c4dm/timeline.owl#start', '"' + dateStart.toISOString() + '"');
 		writer.addTriple(timeURI, 'http://purl.org/NET/c4dm/timeline.owl#duration', '"' + durationISO + '"');
 
+
+		var activities = $("#inputActivities").tagsinput('items');
+		for (var i = 0; i < activities.length; i++) {
+			if (URI.parse(activities[i]))
+		   		var activity = activities[i];
+		   	else
+		   		var activity = '"' + activities[i] + '"';
+		   writer.addTriple(envURI, 'http://purl.org/ontology/ao/core#activity', activity);
+		}
+
+		var nearbyEntities = $("#inputNearby").tagsinput('items');
+		for (var i = 0; i < nearbyEntities.length; i++) {
+		   if (URI.parse(nearbyEntities[i]))
+		   		var nearbyEnt = nearbyEntities[i];
+		   else
+		   		var nearbyEnt = '"' + nearbyEntities[i] + '"';
+		   writer.addTriple(envURI, 'http://ns.inria.fr/prissma/v2#nearbyEntity', nearbyEnt);
+		}
+
+
+		var motion;
+		if ($("#inputUserFirstName").val())
+			motion = true;
+		else
+			motion = false;
+		writer.addTriple(envURI, 'http://ns.inria.fr/prissma/v2#motion', '"' + motion + '"');
 
 
 
