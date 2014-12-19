@@ -32,8 +32,10 @@ $(document).ready(function(){
 
 
 	// date and time
-	$('#datetimepicker-date').datetimepicker({pickTime: false});
-	$('#datetimepicker-time').datetimepicker({pickDate: false});
+	$('#datetimepicker-date-start').datetimepicker({pickTime: false});
+	$('#datetimepicker-time-start').datetimepicker({pickDate: false});
+	$('#datetimepicker-date-end').datetimepicker({pickDate: false});
+	$('#datetimepicker-time-end').datetimepicker({pickTime: false});
 
 
 
