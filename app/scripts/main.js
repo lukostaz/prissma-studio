@@ -1,55 +1,43 @@
 console.log('Prissma Studio started.');
 var cnt = 1;
 
-function isURI(str) {
-  var pattern = new RegExp('^(https?:\/\/)?'+ // protocol
-    '((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|'+ // domain name
-    '((\d{1,3}\.){3}\d{1,3}))'+ // OR ip (v4) address
-    '(\:\d+)?(\/[-a-z\d%_.~+]*)*'+ // port and path
-    '(\?[;&a-z\d%_.~+=-]*)?'+ // query string
-    '(\#[-a-z\d_]*)?$','i'); // fragment locater
-  if(!pattern.test(str)) {
-    alert("Please enter a valid URL.");
-    return false;
-  } else {
-    return true;
-  }
-}
-
-
 
 $(document).ready(function(){
 
-	// multiple prefixes
+	// multiple fresnel blocks
 	var next = 1;
     $(".add-more").click(function(e){
         e.preventDefault();
-        var addto = "#field-prefix-" + next;
-        var addRemove = "#field-prefix-" + (next);
+        var addto = "#fresnel-block-" + next;
+        var addRemove = "#fresnel-block-" + (next);
         next = next + 1;
-        var newIn = '<input autocomplete="off" class="input form-inline form-prefix" id="field-prefix-' + next + '" name="field-prefix-' + next + '" type="url">';
+        alert(next);
+        var newIn = '<div class="row" id= "fresnel-block-'  + next + '"><div class="col-lg-2 col-lg-offset-11"><button id="b'  + next + '" class="btn add-more">+</button>             </div>             <div class="panel panel-default">                   <div class="panel-body">                     <div class="form-group col-lg-6">                       <label>Target Class</label>                       <input type="uri" class="form-control" id="inputUseURI" placeholder="ex:ClassName"/>                     </div>                     <div class="form-group col-lg-6">                       <label>Target Entity</label>                       <input type="uri" class="form-control" id="inputUseURI" placeholder="http://example.org/entity"/>                     </div>                     <!-- Show properties -->                       <div class="form-group interest-group">                       <label for="inputShowProperties">Properties to show (press <kbd>enter</kbd> to add multiple items)</label>  <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties"/></div></div></div></div>';
+        // var newIn = '<input autocomplete="off" class="input form-inline form-prefix" id="fresnel-block-'  + next + '" name="fresnel-block-' + next + '" type="url">';
         var newInput = $(newIn);
-        var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >-</button></div><div id="field-prefix-">';
+        var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >-</button>';
         var removeButton = $(removeBtn);
         $(addto).after(newInput);
         $(addRemove).after(removeButton);
-        $("#field-prefix-" + next).attr('data-source',$(addto).attr('data-source'));
+        $("#fresnel-block-" + next).attr('data-source',$(addto).attr('data-source'));
         $("#count-user-prefixes").val(next);  
         
             $('.remove-me').click(function(e){
                 e.preventDefault();
                 var fieldNum = this.id.charAt(this.id.length-1);
-                var fieldID = "#field-prefix-" + fieldNum;
+                var fieldID = "#fresnel-block-" + fieldNum;
                 $(this).remove();
                 $(fieldID).remove();
             });
     });
 
 
-
+	
 	// date and time
 	$('#datetimepicker-date-start').datetimepicker();
 	$('#datetimepicker-date-end').datetimepicker();
+
+
 
 
 
@@ -88,16 +76,6 @@ $(document).ready(function(){
 		}
 	
 
-		//TODO: lenses and formats
-
-
-
-
-
-		
-
-
-
 
 		// add prefixes
 		writer.addPrefix('rdfs', 'http://www.w3.org/2000/01/rdf-schema#');
@@ -131,6 +109,12 @@ $(document).ready(function(){
 		// add triples: formats
 
 
+
+
+
+
+
+
 		// add triples: ctx
 		writer.addTriple(prismURI, 'http://www.w3.org/2004/09/fresnel#purpose', ctxURI);
 		writer.addTriple(ctxURI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://ns.inria.fr/prissma/v2#Context');
@@ -145,7 +129,7 @@ $(document).ready(function(){
 
 
 		
-		// usr
+		// ========= usr
 		var inputUserFirstName = $("#inputUserFirstName").val(); 
 		var inputUserLastName = $("#inputUserLastName").val(); 
 		var inputUserOrganization = $("#inputUserOrganization").val(); 
