@@ -59,6 +59,7 @@ $(document).ready(function(){
 			usrURI = baseURI + '#usr-prism-' + cnt;
 		var devURI = baseURI + '#dev-prism-' + cnt;
 		var envURI = baseURI + '#env-prism-' + cnt;
+		var poiURI = baseURI + '#poi-prism-' + cnt;
 		var stylesheetLink = $("#inputCSS").val();
 
 
@@ -151,13 +152,37 @@ $(document).ready(function(){
 		}
 
 		
-		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/givenName', inputUserFirstName);
-		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/familyName', inputUserLastName);
-		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/gender', gender);
-		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/member', inputUserOrganization);
-		writer.addTriple(envURI, 'http://xmlns.com/foaf/0.1/age', age);
+		if (inputUserFirstName)
+			writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/givenName', inputUserFirstName);
+		if (inputUserLastName)
+			writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/familyName', inputUserLastName);
+		if (gender)
+			writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/gender', gender);
+		if (inputUserOrganization)
+			writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/member', inputUserOrganization);
+		if (age)
+		writer.addTriple(usrURI, 'http://xmlns.com/foaf/0.1/age', age);
 		
 		
+
+
+		// env
+		var radius = distanceWidget.get('distance');
+		var pos = distanceWidget.get('position');
+
+
+		if (pos && radius){
+			writer.addTriple(envURI, 'http://ns.inria.fr/prissma/v2#poi', poiURI);
+			var lat = pos.k;
+			var lon = pos.B;
+			writer.addTriple(poiURI, 'http://www.w3.org/2003/01/geo/wgs84_pos#lat', '"' + lat + '"' );
+			writer.addTriple(poiURI, 'http://www.w3.org/2003/01/geo/wgs84_pos#lon', '"' + lon + '"' );
+			writer.addTriple(poiURI, 'http://ns.inria.fr/prissma/v2#radius', '"' + radius + '"');
+		}
+		
+
+
+
 
 
 
