@@ -75,6 +75,8 @@ $(document).ready(function(){
 		var envURI = baseURI + '#env-prism-' + cnt;
 		var poiURI = baseURI + '#poi-prism-' + cnt;
 		var timeURI = baseURI + '#time-prism-' + cnt;
+		var hwURI = baseURI + '#hw-prism-' + cnt;
+		var swURI = baseURI + '#sw-prism-' + cnt;
 		var stylesheetLink = $("#inputCSS").val();
 
 
@@ -92,7 +94,7 @@ $(document).ready(function(){
 
 
 
-		//dev
+		
 
 
 
@@ -109,6 +111,8 @@ $(document).ready(function(){
 		writer.addPrefix('hard', 'http://www.w3.org/2007/uwa/context/hardware.owl#');
 		writer.addPrefix('soft', 'http://www.w3.org/2007/uwa/context/software.owl#');
 		writer.addPrefix('tl', 'http://purl.org/NET/c4dm/timeline.owl#');
+		writer.addPrefix('common', 'http://www.w3.org/2007/uwa/context/common.owl#');
+		
 
 
 		// add triples: general
@@ -189,7 +193,48 @@ $(document).ready(function(){
 		
 
 
-		// env
+
+
+		// ==========  dev
+		if (inputOS){
+
+			if (!URI.parse(inputOS))
+		   		var inputOS = '"' + inputOS + '"';
+
+			writer.addTriple(devURI, 'http://www.w3.org/2007/uwa/context/software.owl#operatingSystem', swURI);
+			writer.addTriple(swURI, 'http://www.w3.org/2007/uwa/context/common.owl#name', inputOS);
+
+		}
+		if (inputModel){
+
+			if (!URI.parse(inputModel))
+		   		var inputModel = '"' + inputModel + '"';
+
+			writer.addTriple(devURI, 'http://www.w3.org/2007/uwa/context/hardware.owl#deviceHardware', hwURI);
+			writer.addTriple(hwURI, 'http://www.w3.org/2007/uwa/context/common.owl#name', inputModel);
+
+		}
+			
+		// other device prop (hw properties)
+		var otherDevProps = $("#inputOtherDevProps").tagsinput('items');
+		for (var i = 0; i < otherDevProps.length; i++) {
+			
+			var tokens = otherDevProps[i].split(" ");
+		   	var pref = tokens[0];
+		   	var obj = tokens[1];
+
+			if (!URI.parse(obj))
+		   		var obj = '"' + obj + '"';
+		   writer.addTriple(hwURI, pref, obj);
+		}
+
+
+
+
+
+
+
+		// ======== env
 		var radius = distanceWidget.get('distance');
 		var pos = distanceWidget.get('position');
 
