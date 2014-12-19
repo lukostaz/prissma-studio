@@ -32,10 +32,10 @@ $(document).ready(function(){
 
 
 	// date and time
-	$('#datetimepicker-date-start').datetimepicker({pickTime: false});
-	$('#datetimepicker-time-start').datetimepicker({pickDate: false});
-	$('#datetimepicker-date-end').datetimepicker({pickTime: false});
-	$('#datetimepicker-time-end').datetimepicker({pickDate: false});
+	$('#datetimepicker-date-start').datetimepicker();
+	// $('#datetimepicker-time-start').datetimepicker({pickDate: false});
+	$('#datetimepicker-date-end').datetimepicker();
+	// $('#datetimepicker-time-end').datetimepicker({pickDate: false});
 
 
 
@@ -185,13 +185,13 @@ $(document).ready(function(){
 		
 
 		var dateStart = $('#datetimepicker-date-start').data("DateTimePicker").getDate();
-		var timeStart = $('#datetimepicker-time-start').data("DateTimePicker").getDate().toLocaleString();
+		// var timeStart = $('#datetimepicker-time-start').data("DateTimePicker").getDate().toString();
 		var dateEnd = $('#datetimepicker-date-end').data("DateTimePicker").getDate();
-		var timeEnd = $('#datetimepicker-time-end').data("DateTimePicker").getDate().toLocaleString();
+		// var timeEnd = $('#datetimepicker-time-end').data("DateTimePicker").getDate().toString();
 
 		var duration =  Math.abs(dateEnd - dateStart);
-		var d = moment.duration(duration, 'milliseconds');
-		var durationISO = moment(duration).format("mm");
+		var delay = moment.duration(duration);
+		var durationISO = delay.toISOString(duration);
 
 
 		writer.addTriple(envURI, 'http://purl.org/ontology/ao/core#time', timeURI);
