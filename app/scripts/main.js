@@ -4,32 +4,45 @@ var cnt = 1;
 
 $(document).ready(function(){
 
-	// multiple fresnel blocks
-	var next = 1;
-    $(".add-more").click(function(e){
-        e.preventDefault();
-        var addto = "#fresnel-block-" + next;
-        var addRemove = "#fresnel-block-" + (next);
-        next = next + 1;
-        alert(next);
-        var newIn = '<div class="row" id= "fresnel-block-'  + next + '"><div class="col-lg-2 col-lg-offset-11"><button id="b'  + next + '" class="btn add-more">+</button>             </div>             <div class="panel panel-default">                   <div class="panel-body">                     <div class="form-group col-lg-6">                       <label>Target Class</label>                       <input type="uri" class="form-control" id="inputUseURI" placeholder="ex:ClassName"/>                     </div>                     <div class="form-group col-lg-6">                       <label>Target Entity</label>                       <input type="uri" class="form-control" id="inputUseURI" placeholder="http://example.org/entity"/>                     </div>                     <!-- Show properties -->                       <div class="form-group interest-group">                       <label for="inputShowProperties">Properties to show (press <kbd>enter</kbd> to add multiple items)</label>  <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties"/></div></div></div></div>';
-        // var newIn = '<input autocomplete="off" class="input form-inline form-prefix" id="fresnel-block-'  + next + '" name="fresnel-block-' + next + '" type="url">';
-        var newInput = $(newIn);
-        var removeBtn = '<button id="remove' + (next - 1) + '" class="btn btn-danger remove-me" >-</button>';
-        var removeButton = $(removeBtn);
-        $(addto).after(newInput);
-        $(addRemove).after(removeButton);
-        $("#fresnel-block-" + next).attr('data-source',$(addto).attr('data-source'));
-        $("#count-user-prefixes").val(next);  
-        
-            $('.remove-me').click(function(e){
-                e.preventDefault();
-                var fieldNum = this.id.charAt(this.id.length-1);
-                var fieldID = "#fresnel-block-" + fieldNum;
-                $(this).remove();
-                $(fieldID).remove();
-            });
+
+	var tabID = 1;
+	 //display first tab
+        var tabFirst = $('#tab-list a:first');
+        tabFirst.tab('show');
+
+    $('#btn-add-tab').click(function () {
+        tabID++;
+        $('#tab-list').append($('<li role="presentation"><a href="#tab' + tabID + '" role="tab" data-toggle="tab">Lens ' + tabID + '<button class="close" type="button" title="Remove this page">×</button></a></li>'));
+        $('.tab-content').append($('<div class="tab-pane fade" id="tab' + tabID + '"> <div class="form-group col-lg-6"><label>Target Class ' + tabID +'</label> <input type="uri" class="form-control" id="inputTargetClass-' + tabID +'" placeholder="ex:ClassName"/> </div><div class="form-group col-lg-6"> <label>Target Entity</label>  <input type="uri" class="form-control" id="inputTargetEntity-' + tabID +'" placeholder="http://example.org/entity"/></div><div class="form-group interest-group"> <label for="inputShowProperties-' + tabID +'">Properties to show (press <kbd>enter</kbd> to add multiple items)</label>    <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties-' + tabID +'"/>  </div></div>'));
     });
+    
+    $('#tab-list').on('click','.close',function(){
+        var tabID = $(this).parents('a').attr('href');
+        $(this).parents('li').remove();
+        $(tabID).remove();
+
+        //display first tab
+        var tabFirst = $('#tab-list a:first');
+        tabFirst.tab('show');
+    });
+
+
+
+
+
+
+
+
+	
+
+
+
+	
+
+
+
+
+
 
 
 	
