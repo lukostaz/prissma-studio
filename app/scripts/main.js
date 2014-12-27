@@ -7,17 +7,14 @@ $(document).ready(function(){
 	// fresnel lenses tabs
 	var tabID = 1;
 	//display first tab
-    $(this).parents('li').remove();
-    $(tabID).remove();
     var tabFirst = $('#tab-list a:first');
     tabFirst.tab('show');
-
 
 
     $('#btn-add-tab').click(function () {
         tabID++;
         $('#tab-list').append($('<li role="presentation"><a href="#tab' + tabID + '" role="tab" data-toggle="tab">Lens ' + tabID + '<button class="close" type="button" title="Remove this page">×</button></a></li>'));
-        $('.tab-content').append($('<div class="tab-pane fade" id="tab' + tabID + '"> <div class="panel panel-default"><div class="panel-body"><div class="form-group col-lg-6"><label>Target Class ' + tabID +'</label> <input type="uri" class="form-control" id="inputTargetClass-' + tabID +'" placeholder="ex:ClassName"/> </div><div class="form-group col-lg-6"> <label>Target Entity</label>  <input type="uri" class="form-control" id="inputTargetEntity-' + tabID +'" placeholder="http://example.org/entity"/></div><div class="form-group interest-group"> <label for="inputShowProperties-' + tabID +'">Properties to show (press <kbd>enter</kbd> to add multiple items)</label>    <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties-' + tabID +'"/>  </div></div></div> </div>'));
+        $('.tab-content').append($('<div class="tab-pane fade" id="tab' + tabID + '"> <div class="panel panel-default"><div class="panel-body"><div class="form-group col-lg-6"><label>Target Class</label> <input type="uri" class="form-control" id="inputTargetClass-' + tabID +'" placeholder="ex:ClassName"/> </div><div class="form-group col-lg-6"> <label>Target Entity</label>  <input type="uri" class="form-control" id="inputTargetEntity-' + tabID +'" placeholder="http://example.org/entity"/></div><div class="form-group interest-group"> <label for="inputShowProperties-' + tabID +'">Properties to show (press <kbd>enter</kbd> to add multiple items)</label>    <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties-' + tabID +'"/>  </div></div></div> </div>'));
     });
     
     $('#tab-list').on('click','.close',function(){
@@ -33,6 +30,28 @@ $(document).ready(function(){
 
 
 
+	// fresnel formats tabs
+	var tabIDFormats = 1;
+	
+	//display first tab
+    var tabFirstFormats = $('#tab-list-formats a:first');
+    tabFirstFormats.tab('show');
+
+    $('#btn-add-tab-formats').click(function () {
+        tabIDFormats++;
+        $('#tab-list-formats').append($('<li role="presentation"><a href="#tab-formats-' + tabIDFormats + '" role="tab" data-toggle="tab">Format ' + tabIDFormats + '<button class="close" type="button" title="Remove this Format">×</button></a></li>'));
+        $('#tab-content-formats').append($('<div class="tab-pane fade" id="tab-formats-' + tabIDFormats + '"> <div class="panel panel-default"><div class="panel-body">  <div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title">Applies to</h4>  </div><div class="panel-body"> <div class="form-group col-lg-6"> <label>Property Class</label> <input type="uri" class="form-control" id="propertyClass-' + tabIDFormats + '" placeholder="ex:ClassName"/>  </div>  <div class="form-group col-lg-6"> <label>Property Entity</label> <input type="uri" class="form-control" id="propertyEntity-' + tabIDFormats + '" placeholder="http://example.org/entity"/></div></div> </div>  <div class="form-group"> <label for="inputName">Property Label</label> <input type="text" class="form-control" id="propertyLabel-' + tabIDFormats + '" /> </div>  <div class="form-group col-lg-6">  <label for="inputName">Property Label CSS class</label> <input type="text" class="form-control" id="propertyLabelCSS-' + tabIDFormats + '" /> </div><div class="form-group col-lg-6"> <label for="inputName">Property Value CSS class</label><input type="text" class="form-control" id="propertyValueCSS-' + tabIDFormats + '" /></div>             </div></div></div>'));
+    });
+    
+    $('#tab-list-formats').on('click','.close',function(){
+        var tabIDFormats = $(this).parents('a').attr('href');
+        $(this).parents('li').remove();
+        $(tabIDFormats).remove();
+
+        //display first tab
+        var tabFirstFormats = $('#tab-list-formats a:first');
+        tabFirstFormats.tab('show');
+    });
 
 
 

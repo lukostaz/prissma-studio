@@ -76,18 +76,24 @@
                     <input type="text" data-role="tagsinput" class="form-inline" id="inputPrefixes" placeholder='prefix http://example.org/vocab'/>
             </div>
             
-          </div>
+
+            <!-- External CSS  -->
+            <div class="form-group">
+                <label for="inputCSS">CSS</label>
+                <input type="text" class="form-control" id="inputCSS" placeholder="http://example.org/styles/sample.css"/>
+            </div>
+
+          </div> <!-- prism-block -->
 
 
 
 
           <div class="col-lg-10 col-lg-offset-1 prism-block">
-
             <h3>Lenses</h3>
             <div class="row">
                 <div class="col-md-12">
                     <p>
-                    <button type="button" class="btn btn-primary pull-right" id="btn-add-tab" >Add Tab</button>
+                    <button type="button" class="btn btn-primary pull-right" id="btn-add-tab" >Add Lens</button>
                     </p>
                     <!-- Nav tabs -->
                     <ul id="tab-list" class="nav nav-tabs" role="tablist">
@@ -119,60 +125,67 @@
                     </div>
                 </div>
             </div>
-
-
-          </div>
+          </div> <!-- prism-block  lenses-->
          
- <!--          <div class="row" id= "fresnel-block-1">
-            <label>Formatting</label>
-            <div class="col-lg-2 col-lg-offset-11">
-              <button id="b1" class="btn add-more">+</button>
+
+
+
+        <div class="col-lg-10 col-lg-offset-1 prism-block">
+          <h3>Formats</h3>
+          <div class="row">
+            <div class="col-md-12">
+                <p>
+                <button type="button" class="btn btn-primary pull-right" id="btn-add-tab-formats" >Add Format</button>
+                </p>
+                <!-- Nav tabs -->
+                <ul id="tab-list-formats" class="nav nav-tabs" role="tablist">
+                    <li role="presentation"><a href="#tab-formats-1" role="tab" data-toggle="tab">Format 1</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content" id="tab-content-formats"> 
+                  <div class="tab-pane fade" id="tab-formats-1">
+                    <!-- The format -->
+                    <div class="panel panel-default">
+                      <div class="panel-body">
+                        <div class="panel panel-default">
+                          <div class="panel-heading">
+                            <h4 class="panel-title">Applies to</h4>
+                          </div>
+                          <div class="panel-body">
+                            <div class="form-group col-lg-6">
+                              <label>Property Class</label>
+                              <input type="uri" class="form-control" id="inputUseURI" placeholder='ex:ClassName'/>
+                            </div>
+                            <div class="form-group col-lg-6">
+                              <label>Property Entity</label>
+                              <input type="uri" class="form-control" id="inputUseURI" placeholder='http://example.org/entity'/>
+                            </div>
+                          </div>
+                        </div>                             
+                        <div class="form-group">
+                          <label for="inputName">Property Label</label>
+                          <input type="text" class="form-control" id="inputName" />
+                        </div>  
+                        <div class="form-group col-lg-6">
+                          <label for="inputName">Property Label CSS class</label>
+                          <input type="text" class="form-control" id="inputName" />
+                        </div>
+                        <div class="form-group col-lg-6">
+                          <label for="inputName">Property Value CSS class</label>
+                          <input type="text" class="form-control" id="inputName" />
+                        </div>
+                      </div> 
+                  </div><!-- panel format -->
+
+
+
+                  </div> <!-- tab1 -->
+                </div> <!-- tab content -->   
             </div>
-            <div class="panel panel-default">
-                <div class="panel-body">
-
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h4 class="panel-title">Applies to</h4>
-                    </div>
-                    <div class="panel-body">
-                      <div class="form-group col-lg-6">
-                        <label>Property Class</label>
-                        <input type="uri" class="form-control" id="inputUseURI" placeholder='ex:ClassName'/>
-                      </div>
-                      <div class="form-group col-lg-6">
-                        <label>Property Entity</label>
-                        <input type="uri" class="form-control" id="inputUseURI" placeholder='http://example.org/entity'/>
-                      </div>
-                    </div>
-                  </div>            
-                  
-                  <div class="form-group">
-                    <label for="inputName">Property Label</label>
-                    <input type="text" class="form-control" id="inputName" />
-                  </div>  
-                  <div class="form-group col-lg-6">
-                    <label for="inputName">Property Label CSS class</label>
-                    <input type="text" class="form-control" id="inputName" />
-                  </div>
-                  <div class="form-group col-lg-6">
-                    <label for="inputName">Property Value CSS class</label>
-                    <input type="text" class="form-control" id="inputName" />
-                  </div>
-
-                </div> 
-            </div><!-- panel format -->
-
-
-            <!-- External CSS  -->
-           <!-- <div class="form-group">
-              <label for="inputCSS">CSS</label>
-              <input type="text" class="form-control" id="inputCSS" placeholder="http://example.org/styles/sample.css"/>
-            </div>
-
-          </div> -->
-       
+          </div> <!-- row -->
+        </div> <!-- prism-block formats -->       
           
+
 
 
 
