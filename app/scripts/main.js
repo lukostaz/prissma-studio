@@ -13,7 +13,7 @@ $(document).ready(function(){
     $('#btn-add-tab').click(function () {
         tabID++;
         $('#tab-list').append($('<li role="presentation"><a href="#tab' + tabID + '" role="tab" data-toggle="tab">Lens ' + tabID + '<button class="close" type="button" title="Remove this page">×</button></a></li>'));
-        $('.tab-content').append($('<div class="tab-pane fade" id="tab' + tabID + '"> <div class="form-group col-lg-6"><label>Target Class ' + tabID +'</label> <input type="uri" class="form-control" id="inputTargetClass-' + tabID +'" placeholder="ex:ClassName"/> </div><div class="form-group col-lg-6"> <label>Target Entity</label>  <input type="uri" class="form-control" id="inputTargetEntity-' + tabID +'" placeholder="http://example.org/entity"/></div><div class="form-group interest-group"> <label for="inputShowProperties-' + tabID +'">Properties to show (press <kbd>enter</kbd> to add multiple items)</label>    <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties-' + tabID +'"/>  </div></div>'));
+        $('.tab-content').append($('<div class="tab-pane fade" id="tab' + tabID + '"> </div>'));
     });
     
     $('#tab-list').on('click','.close',function(){
