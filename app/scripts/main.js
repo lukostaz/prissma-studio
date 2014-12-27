@@ -4,7 +4,7 @@ var cnt = 1;
 
 $(document).ready(function(){
 
-	// fresnel lenses tabs
+	// ----------- fresnel lenses tabs
 	var tabID = 1;
 	//display first tab
     var tabFirst = $('#tab-list a:first');
@@ -30,7 +30,7 @@ $(document).ready(function(){
 
 
 
-	// fresnel formats tabs
+	// ----------- fresnel formats tabs
 	var tabIDFormats = 1;
 	
 	//display first tab
@@ -52,17 +52,6 @@ $(document).ready(function(){
         var tabFirstFormats = $('#tab-list-formats a:first');
         tabFirstFormats.tab('show');
     });
-
-
-
-
-	
-
-
-
-	
-
-
 
 
 
@@ -139,11 +128,37 @@ $(document).ready(function(){
 
 		
 
-		// add triples: lenses
+		// Lenses
+		// iterate over lenses
+		for (var i = 1; i <= tabID; i++) {
+			
+			var lensURI = baseURI + '#lens-' + i;
+			writer.addTriple(lensURI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/09/fresnel#Lens');
+			writer.addTriple(lensURI, 'http://www.w3.org/2004/09/fresnel#group', prismURI);
+			
+			var inputTargetClass = $("#inputTargetClass-" + i).val(); 
+			if (inputTargetClass)
+				writer.addTriple(lensURI, 'http://www.w3.org/2004/09/fresnel#classLensDomain', inputTargetClass);	
+			var inputTargetEntity = $("#inputTargetEntity-" + i).val(); 
+			if (inputTargetEntity)
+				writer.addTriple(lensURI, 'http://www.w3.org/2004/09/fresnel#instanceLensDomain', inputTargetEntity);	
+
+			// properties to show
+			var inputShowProperties = $("#inputShowProperties-" + i).tagsinput('items');
+			if (inputShowProperties){
+				var propList = inputShowProperties.join(" ");
+				writer.addTriple(lensURI, "http://www.w3.org/2004/09/fresnel#showProperties", "\"(" + propList + ")\"");
+			}
+			
+		}
+
+
 
 
 		// add triples: formats
+		for (var i = 1; i <= tabIDFormats; i++) {
 
+		}
 
 
 
