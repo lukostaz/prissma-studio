@@ -91,14 +91,30 @@
                     </p>
                     <!-- Nav tabs -->
                     <ul id="tab-list" class="nav nav-tabs" role="tablist">
-                        <li class="active" role="presentation"><a href="#tab1" role="tab" data-toggle="tab">Lens 1</a></li>
+                        <li role="presentation"><a href="#tab1" role="tab" data-toggle="tab">Lens 1</a></li>
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
                       <div class="tab-pane fade" id="tab1">
-                      dasdasdasdas d as das d  das d as
-                       </div>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                              <div class="form-group col-lg-6">
+                                <label>Target Class</label>
+                                <input type="uri" class="form-control" id="inputTargetClass-1" placeholder='ex:ClassName'/>
+                              </div>
+                              <div class="form-group col-lg-6">
+                                <label>Target Entity</label>
+                                <input type="uri" class="form-control" id="inputTargetEntity-1" placeholder='http://example.org/entity'/>
+                              </div>
+                              <!-- Show properties -->  
+                              <div class="form-group interest-group">
+                                <label for="inputShowProperties">Properties to show (press <kbd>enter</kbd> to add multiple items)</label>
+                                <input type="text" data-role="tagsinput" class="form-inline" id="inputShowProperties-1"/>
+                              </div>
+                            </div> 
+                        </div><!-- panel lens -->
+                      </div> <!-- tab1 -->
 
                     </div>
                 </div>
@@ -107,8 +123,7 @@
 
 
          
-          <div class="row" id= "fresnel-block-1">
-
+ <!--          <div class="row" id= "fresnel-block-1">
             <label>Formatting</label>
             <div class="col-lg-2 col-lg-offset-11">
               <button id="b1" class="btn add-more">+</button>
@@ -130,10 +145,7 @@
                         <input type="uri" class="form-control" id="inputUseURI" placeholder='http://example.org/entity'/>
                       </div>
                     </div>
-                  </div>
-
-
-                  
+                  </div>            
                   
                   <div class="form-group">
                     <label for="inputName">Property Label</label>
@@ -153,12 +165,12 @@
 
 
             <!-- External CSS  -->
-            <div class="form-group">
+           <!-- <div class="form-group">
               <label for="inputCSS">CSS</label>
               <input type="text" class="form-control" id="inputCSS" placeholder="http://example.org/styles/sample.css"/>
             </div>
 
-          </div>
+          </div> -->
        
           
 
