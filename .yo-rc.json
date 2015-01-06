@@ -1,9 +1,0 @@
-{
-  "generator-backbone": {
-    "appPath": "app",
-    "appName": "PrissmaStudio",
-    "testFramework": "mocha",
-    "templateFramework": "lodash"
-  },
-  "generator-mocha": {}
-}
