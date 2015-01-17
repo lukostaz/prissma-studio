@@ -1,6 +1,6 @@
 PRISSMA Studio
 ===========
-# A PRISSMA Prism Designer
+### A PRISSMA Prism Designer
 
 PRISSMA Studio is a web application that assist [PRISSMA](http://wimmics.inria.fr/projects/prissma) designers in creating Prisms.
 
@@ -10,7 +10,7 @@ Once created, Prisms can be stored on the file system of PRISSMA-equipped mobile
 
 
 
-# Installation
+## Installation
 
 PRISSMA Studio comes as an in-browser web application.
 
@@ -26,12 +26,12 @@ Open `index.html` in browser.
 
 
 
-# Demo
+## Demo
 
 [Check out PRISSMA Studio demo here](luca.costabello.info/prissma-studio/).
 
 
-# Licence
+## Licence
 	
     Copyright (C) 2014 Luca Costabello, v1.0.0
 
@@ -48,7 +48,7 @@ Open `index.html` in browser.
     You should have received a copy of the GNU General Public License along
     with this program; if not, see <http://www.gnu.org/licenses/>.
 
-# Contacts
+## Contacts
 Further details on the [PRISSMA Project Page](http://wimmics.inria.fr/projects/prissma/), or contact [Luca Costabello](http://luca.costabello.info) directly.
 
 
