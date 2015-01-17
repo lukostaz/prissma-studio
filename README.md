@@ -31,7 +31,7 @@ Run [Grunt](http://gruntjs.com/):
 
 ## Demo
 
-[Check out PRISSMA Studio demo here](luca.costabello.info/prissma-studio/).
+[Check out PRISSMA Studio demo here](http://luca.costabello.info/prissma-studio/).
 
 
 ## Licence
