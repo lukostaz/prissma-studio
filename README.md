@@ -12,18 +12,17 @@ Once created, Prisms can be stored on the file system of PRISSMA-equipped mobile
 
 ## Installation
 
-PRISSMA Studio comes as an in-browser web application.
-
 Clone the repository:
 
-	git clone git@github.com:lukostaz/prissma-studio.git
+	$ git clone git@github.com:lukostaz/prissma-studio.git
 
-Download dependencies with [Bower](http://bower.io/):
+Install project dependencies with [npm](https://npmjs.org/):
 
-	$ bower install
+	$ npm install
 
-Open `index.html` in browser.
+Run [Grunt](http://gruntjs.com/):
 
+	$ grunt
 
 
 ## Demo
