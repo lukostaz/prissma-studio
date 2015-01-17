@@ -1,12 +1,12 @@
 PRISSMA Studio
 ===========
-### A PRISSMA Prism Designer
+### A Prism Designer for PRISSMA
 
-PRISSMA Studio is a web application that assist [PRISSMA](http://wimmics.inria.fr/projects/prissma) designers in creating Prisms.
+PRISSMA Studio is a web application that assist [PRISSMA](http://wimmics.inria.fr/projects/prissma) designers in creating Prisms, according to the [PRISSMA vocabulary](ns.inria.fr/prissma/v2/prissma_v2.html).
 
-PRISSMA Studio supports designers in the creation of Fresnel Lenses and Formats, and eases the definition of the associated PRISSMA context.
+PRISSMA Studio supports designers in the creation of [Fresnel](http://www.w3.org/2005/04/fresnel-info/manual/) Lenses and Formats, and eases the definition of the associated [PRISSMA context](http://ns.inria.fr/prissma/v2/prissma_v2.html#Context).
 
-Once created, Prisms can be stored on the file system of PRISSMA-equipped mobile devices, where they will be pro- cessed by the PRISSMA selection algorithm.
+Once created, Prisms can be stored on the file system of PRISSMA-equipped mobile devices, where they will be processed by the [PRISSMA selection algorithm](http://2014.eswc-conferences.org/sites/default/files/papers/paper_81.pdf) .
 
 
 
@@ -20,9 +20,13 @@ Install project dependencies with [npm](https://npmjs.org/):
 
 	$ npm install
 
+Install packages with [Bower](http://bower.io/):
+
+	$ bower install
+
 Run [Grunt](http://gruntjs.com/):
 
-	$ grunt
+	$ grunt serve
 
 
 ## Demo
