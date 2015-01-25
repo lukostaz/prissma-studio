@@ -6,8 +6,8 @@ var XsdString = 'http://www.w3.org/2001/XMLSchema#string';
 var RdfLangString = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString';
 
 var N3Util = {
-  // Tests whether the given entity (triple object) represents a URI in the N3 library
-  isUri: function (entity) {
+  // Tests whether the given entity (triple object) represents an IRI in the N3 library
+  isIRI: function (entity) {
     if (!entity)
       return entity;
     var firstChar = entity[0];
@@ -34,7 +34,7 @@ var N3Util = {
 
   // Gets the type of a literal in the N3 library
   getLiteralType: function (literal) {
-    var match = /^"[^]*"(?:\^\^([^"\^]+)|(@)[^@"]+)?$/.exec(literal);
+    var match = /^"[^]*"(?:\^\^([^"]+)|(@)[^@"]+)?$/.exec(literal);
     if (!match)
       throw new Error(literal + ' is not a literal');
     return match[1] || (match[2] ? RdfLangString : XsdString);
@@ -42,7 +42,7 @@ var N3Util = {
 
   // Gets the language of a literal in the N3 library
   getLiteralLanguage: function (literal) {
-    var match = /^"[^]*"(?:@([^@"]+)|\^\^[^"\^]+)?$/.exec(literal);
+    var match = /^"[^]*"(?:@([^@"]+)|\^\^[^"]+)?$/.exec(literal);
     if (!match)
       throw new Error(literal + ' is not a literal');
     return match[1] ? match[1].toLowerCase() : '';
@@ -53,7 +53,7 @@ var N3Util = {
     return entity && /^[^:\/"']*:[^:\/"']+$/.test(entity);
   },
 
-  // Expands the prefixed name to a full URI (also when it occurs as a literal's type)
+  // Expands the prefixed name to a full IRI (also when it occurs as a literal's type)
   expandPrefixedName: function (prefixedName, prefixes) {
     var match = /(?:^|"\^\^)([^:\/#"'\^_]*):[^\/]/.exec(prefixedName);
     if (!match) return prefixedName;
@@ -89,28 +89,9 @@ function ApplyToThis(f) {
 
 N3.Util = AddN3Util(AddN3Util);
 // **N3Lexer** tokenizes N3 documents.
-// ## Regular expressions
-var patterns = {
-  _iri: /^<((?:[^\x00-\x20<>\\"\{\}\|\^\`]|\\[uU])*)>/,
-  _string: /^"[^"\\]*(?:\\.[^"\\]*)*"(?=[^"\\])|^'[^'\\]*(?:\\.[^'\\]*)*'(?=[^'\\])/,
-  _tripleQuotedString: /^""("[^"\\]*(?:(?:\\.|"(?!""))[^"\\]*)*")""|^''('[^'\\]*(?:(?:\\.|'(?!''))[^'\\]*)*')''/,
-  _langcode: /^@([a-z]+(?:-[a-z0-9]+)*)(?=[^a-z0-9\-])/i,
-  _prefix: /^((?:[A-Za-z\xc0-\xd6\xd8-\xf6\xf8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])(?:[\.\-0-9A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])*)?:(?=\s|<)/,
-  _prefixedName:  /^((?:[A-Z_a-z\xc0-\xd6\xd8-\xf6\xf8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])(?:[\.\-0-9A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])*)?:((?:(?:[0-:A-Z_a-z\xc0-\xd6\xd8-\xf6\xf8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff]|%[0-9a-fA-F]{2}|\\[!#-\/;=?\-@_~])(?:(?:[\.\-0-:A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff]|%[0-9a-fA-F]{2}|\\[!#-\/;=?\-@_~])*(?:[\-0-:A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff]|%[0-9a-fA-F]{2}|\\[!#-\/;=?\-@_~]))?)?)(?=[\s#;,)\]]|\.[\s#\(\[<"'])/,
-  _number: /^[\-+]?(?:\d+\.?\d*([eE](?:[\-\+])?\d+)|\d+\.\d+|\.\d+|\d+)(?=[\s#.;,)\]])/,
-  _boolean: /^(?:true|false)(?=[\s#.;,)\]])/,
-  _dot: /^\.(?!\d)/, // If a digit follows a dot, it is a number, not punctuation.
-  _punctuation: /^[;,\[\]\(\)]/,
-  _fastString: /^"[^"\\]+"(?=[^"\\])/,
-  _keyword: /^@[a-z]+(?=\s)/,
-  _sparqlKeyword: /^(?:PREFIX|BASE)(?=\s)/i,
-  _type: /^\^\^(?:<([^>]*)>|([A-Z_a-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c-\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd][\-0-9A-Z_a-z\u00b7\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u037d\u037f-\u1fff\u200c-\u200d\u203f-\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]*)?:([A-Z_a-z\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c-\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd][\-0-9A-Z_a-z\u00b7\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u037d\u037f-\u1fff\u200c-\u200d\u203f-\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]*)(?=[\s\.;,)#]))/,
-  _shortPredicates: /^a(?=\s+|<)/,
-  _newline: /^[ \t]*(?:#[^\n\r]*)?(?:\r\n|\n|\r)[ \t]*/,
-  _whitespace: /^[ \t]+/,
-  _nonwhitespace: /^\S*/,
-  _endOfFile: /^(?:#[^\n\r]*)?$/,
-};
+var fromCharCode = String.fromCharCode;
+var immediately = typeof setImmediate === 'function' ? setImmediate :
+                  function setImmediate(func) { setTimeout(func, 0); };
 
 // Regular expression and replacement string to escape N3 strings.
 // Note how we catch invalid unicode sequences separately (they will trigger an error).
@@ -120,29 +101,53 @@ var escapeReplacements = { '\\': '\\', "'": "'", '"': '"',
                            '_': '_', '~': '~', '.': '.', '-': '-', '!': '!', '$': '$', '&': '&',
                            '(': '(', ')': ')', '*': '*', '+': '+', ',': ',', ';': ';', '=': '=',
                            '/': '/', '?': '?', '#': '#', '@': '@', '%': '%' };
-var illegalUrlChars = /[\x00-\x20<>\\"\{\}\|\^\`]/;
-var fromCharCode = String.fromCharCode;
-
-// Different punctuation types.
-var punctuationTypes = { '.': 'dot', ';': 'semicolon', ',': 'comma',
-                         '[': 'bracketopen', ']': 'bracketclose',
-                         '(': 'liststart', ')': 'listend' };
-
-// `setImmediate` shim
-var immediately = typeof setImmediate === 'function' ? setImmediate :
-                  function setImmediate(func) { setTimeout(func, 0); };
+var illegalIriChars = /[\x00-\x20<>\\"\{\}\|\^\`]/;
 
 // ## Constructor
-function N3Lexer() {
+function N3Lexer(options) {
   if (!(this instanceof N3Lexer))
-    return new N3Lexer();
+    return new N3Lexer(options);
 
-  // Local copies of the patterns perform slightly better.
-  for (var name in patterns)
-    this[name] = patterns[name];
+  // In line mode (N-Triples or N-Quads), only simple features may be parsed
+  if (options && options.lineMode) {
+    // Don't tokenize special literals
+    this._tripleQuotedString = this._number = this._boolean = /$0^/;
+    // Swap the tokenize method for a restricted version
+    var self = this;
+    this._tokenize = this.tokenize;
+    this.tokenize = function (input, callback) {
+      this._tokenize(input, function (error, token) {
+        if (!error && /IRI|prefixed|literal|langcode|type|\.|eof/.test(token.type))
+          callback && callback(error, token);
+        else
+          callback && callback(error || self._syntaxError(token.type, callback = null));
+      });
+    };
+  }
 }
 
 N3Lexer.prototype = {
+  // ## Regular expressions
+  // It's slightly faster to have these as properties than as in-scope variables.
+
+  _iri: /^<((?:[^>\\]|\\[uU])+)>/, // IRI with escape sequences; needs sanity check after unescaping
+  _unescapedIri: /^<([^\x00-\x20<>\\"\{\}\|\^\`]*)>/, // IRI without escape sequences; no unescaping
+  _unescapedString: /^"[^"\\]+"(?=[^"\\])/, // non-empty string without escape sequences
+  _singleQuotedString: /^"[^"\\]*(?:\\.[^"\\]*)*"(?=[^"\\])|^'[^'\\]*(?:\\.[^'\\]*)*'(?=[^'\\])/,
+  _tripleQuotedString: /^""("[^"\\]*(?:(?:\\.|"(?!""))[^"\\]*)*")""|^''('[^'\\]*(?:(?:\\.|'(?!''))[^'\\]*)*')''/,
+  _langcode: /^@([a-z]+(?:-[a-z0-9]+)*)(?=[^a-z0-9\-])/i,
+  _prefix: /^((?:[A-Za-z\xc0-\xd6\xd8-\xf6\xf8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])(?:\.?[\-0-9A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])*)?:(?=[#\s<])/,
+  _prefixed: /^((?:[A-Za-z\xc0-\xd6\xd8-\xf6\xf8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])(?:\.?[\-0-9A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])*)?:((?:(?:[0-:A-Z_a-z\xc0-\xd6\xd8-\xf6\xf8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff]|%[0-9a-fA-F]{2}|\\[!#-\/;=?\-@_~])(?:(?:[\.\-0-:A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff]|%[0-9a-fA-F]{2}|\\[!#-\/;=?\-@_~])*(?:[\-0-:A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff]|%[0-9a-fA-F]{2}|\\[!#-\/;=?\-@_~]))?)?)(?=\.?[,;\s#()\[\]\{\}"'<])/,
+  _blank: /^_:((?:[0-9A-Z_a-z\xc0-\xd6\xd8-\xf6\xf8-\u02ff\u0370-\u037d\u037f-\u1fff\u200c\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])(?:\.?[\-0-9A-Z_a-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u037f-\u1fff\u200c\u200d\u203f\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]|[\ud800-\udb7f][\udc00-\udfff])*)(?=\.?[,;:\s#()\[\]\{\}"'<])/,
+  _number: /^[\-+]?(?:\d+\.?\d*([eE](?:[\-\+])?\d+)|\d*\.?\d+)(?=[.,;:\s#()\[\]\{\}"'<])/,
+  _boolean: /^(?:true|false)(?=[.,;:\s#()\[\]\{\}"'<])/,
+  _keyword: /^@[a-z]+(?=[\s#<:])/,
+  _sparqlKeyword: /^(?:PREFIX|BASE|GRAPH)(?=[\s#<:])/i,
+  _shortPredicates: /^a(?=\s+|<)/,
+  _newline: /^[ \t]*(?:#[^\n\r]*)?(?:\r\n|\n|\r)[ \t]*/,
+  _whitespace: /^[ \t]+/,
+  _endOfFile: /^(?:#[^\n\r]*)?$/,
+
   // ## Private methods
 
   // ### `_tokenizeToEnd` tokenizes as for as possible, emitting tokens through the callback.
@@ -158,51 +163,75 @@ N3Lexer.prototype = {
       if (whiteSpaceMatch = this._whitespace.exec(input))
         input = input.substr(whiteSpaceMatch[0].length, input.length);
 
-      // Create uniform token skeleton, so the JavaScript engine uses one runtime type for all tokens.
-      var token = { line: this._line, type: '', value: '', prefix: '' };
-
       // Stop for now if we're at the end.
       if (this._endOfFile.test(input)) {
         // If the input is finished, emit EOF.
-        if (inputFinished) {
-          input = null;
-          token.type = 'eof';
-          callback(null, token);
-        }
+        if (inputFinished)
+          callback(input = null, { line: this._line, type: 'eof', value: '', prefix: '' });
         return this._input = input;
       }
 
       // Look for specific token types based on the first character.
-      var firstChar = input[0], match = null, unescaped, inconclusive = false;
+      var line = this._line, type = '', value = '', prefix = '',
+          firstChar = input[0], match = null, matchLength = 0, unescaped, inconclusive = false;
       switch (firstChar) {
+      case '^':
+        // Try to match a type.
+        if (input.length === 1) break;
+        else if (input[1] !== '^') return reportSyntaxError(this);
+        this._prevTokenType = '^';
+        // Move to type IRI or prefixed name.
+        input = input.substr(2);
+        if (input[0] !== '<') {
+          inconclusive = true;
+          break;
+        }
+        // Fall through in case the type is an IRI.
+
       case '<':
-        // Try to find a full URI.
-        if (match = this._iri.exec(input)) {
+        // Try to find a full IRI without escape sequences.
+        if (match = this._unescapedIri.exec(input)) {
+          type = 'IRI';
+          value = match[1];
+        }
+        // Try to find a full IRI with escape sequences.
+        else if (match = this._iri.exec(input)) {
           unescaped = this._unescape(match[1]);
-          if (unescaped === null || illegalUrlChars.test(unescaped))
+          if (unescaped === null || illegalIriChars.test(unescaped))
             return reportSyntaxError(this);
-          token.type = 'IRI';
-          token.value = unescaped;
+          type = 'IRI';
+          value = unescaped;
+        }
+        break;
+
+      case '_':
+        // Try to find a blank node. Since it can contain (but not end with) a dot,
+        // we always need a non-dot character before deciding it is a prefixed name.
+        // Therefore, try inserting a space if we're at the end of the input.
+        if ((match = this._blank.exec(input)) ||
+            inputFinished && (match = this._blank.exec(input + ' '))) {
+          type = 'prefixed';
+          prefix = '_';
+          value = match[1];
         }
         break;
 
       case '"':
       case "'":
-        // Try to find a string literal the fast way.
-        // This only includes non-empty simple quoted literals without escapes.
-        if (match = this._fastString.exec(input)) {
-          token.type = 'literal';
-          token.value = match[0];
+        // Try to find a non-empty double-quoted literal without escape sequences.
+        if (match = this._unescapedString.exec(input)) {
+          type = 'literal';
+          value = match[0];
         }
-        // Try to find any other string literal wrapped in a pair of quotes.
-        else if (match = this._string.exec(input)) {
+        // Try to find any other literal wrapped in a pair of single or double quotes.
+        else if (match = this._singleQuotedString.exec(input)) {
           unescaped = this._unescape(match[0]);
           if (unescaped === null)
             return reportSyntaxError(this);
-          token.type = 'literal';
-          token.value = unescaped.replace(/^'|'$/g, '"');
+          type = 'literal';
+          value = unescaped.replace(/^'|'$/g, '"');
         }
-        // Try to find a string literal wrapped in a pair of triple quotes.
+        // Try to find a literal wrapped in three pairs of single or double quotes.
         else if (match = this._tripleQuotedString.exec(input)) {
           unescaped = match[1] || match[2];
           // Count the newlines and advance line counter.
@@ -210,42 +239,28 @@ N3Lexer.prototype = {
           unescaped = this._unescape(unescaped);
           if (unescaped === null)
             return reportSyntaxError(this);
-          token.type = 'literal';
-          token.value = unescaped.replace(/^'|'$/g, '"');
+          type = 'literal';
+          value = unescaped.replace(/^'|'$/g, '"');
         }
         break;
 
       case '@':
         // Try to find a language code.
         if (this._prevTokenType === 'literal' && (match = this._langcode.exec(input))) {
-          token.type = 'langcode';
-          token.value = match[1];
+          type = 'langcode';
+          value = match[1];
         }
         // Try to find a keyword.
         else if (match = this._keyword.exec(input)) {
-          token.type = match[0];
-        }
-        break;
-
-      case '^':
-        // Try to find a type.
-        if (match = this._type.exec(input)) {
-          token.type = 'type';
-          if (!match[2]) {
-            token.value = match[1];
-          }
-          else {
-            token.prefix = match[2];
-            token.value = match[3];
-          }
+          type = match[0];
         }
         break;
 
       case '.':
         // Try to find a dot as punctuation.
-        if (match = this._dot.test(input)) {
-          token.type = 'dot';
-          match = ['.'];
+        if (input.length === 1 ? inputFinished : (input[1] < '0' || input[1] > '9')) {
+          type = '.';
+          matchLength = 1;
           break;
         }
         // Fall through to numerical case (could be a decimal dot).
@@ -264,9 +279,9 @@ N3Lexer.prototype = {
       case '-':
         // Try to find a number.
         if (match = this._number.exec(input)) {
-          token.type = 'literal';
-          token.value = '"' + match[0] + '"^^http://www.w3.org/2001/XMLSchema#' +
-                        (match[1] ? 'double' : (/^[+\-]?\d+$/.test(match[0]) ? 'integer' : 'decimal'));
+          type = 'literal';
+          value = '"' + match[0] + '"^^http://www.w3.org/2001/XMLSchema#' +
+                  (match[1] ? 'double' : (/^[+\-]?\d+$/.test(match[0]) ? 'integer' : 'decimal'));
         }
         break;
 
@@ -274,9 +289,11 @@ N3Lexer.prototype = {
       case 'b':
       case 'p':
       case 'P':
+      case 'G':
+      case 'g':
         // Try to find a SPARQL-style keyword.
         if (match = this._sparqlKeyword.exec(input))
-          token.type = match[0].toUpperCase();
+          type = match[0].toUpperCase();
         else
           inconclusive = true;
         break;
@@ -285,8 +302,8 @@ N3Lexer.prototype = {
       case 't':
         // Try to match a boolean.
         if (match = this._boolean.exec(input)) {
-          token.type = 'literal';
-          token.value = '"' + match[0] + '"^^http://www.w3.org/2001/XMLSchema#boolean';
+          type = 'literal';
+          value = '"' + match[0] + '"^^http://www.w3.org/2001/XMLSchema#boolean';
         }
         else
           inconclusive = true;
@@ -295,8 +312,8 @@ N3Lexer.prototype = {
       case 'a':
         // Try to find an abbreviated predicate.
         if (match = this._shortPredicates.exec(input)) {
-          token.type = 'abbreviation';
-          token.value = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+          type = 'abbreviation';
+          value = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
         }
         else
           inconclusive = true;
@@ -308,9 +325,11 @@ N3Lexer.prototype = {
       case ']':
       case '(':
       case ')':
-        // Try to find any punctuation (except a dot).
-        match = this._punctuation.exec(firstChar);
-        token.type = punctuationTypes[firstChar];
+      case '{':
+      case '}':
+        // The next token is punctuation
+        matchLength = 1;
+        type = firstChar;
         break;
 
       default:
@@ -322,22 +341,26 @@ N3Lexer.prototype = {
         // Try to find a prefix.
         if ((this._prevTokenType === '@prefix' || this._prevTokenType === 'PREFIX') &&
             (match = this._prefix.exec(input))) {
-          token.type = 'prefix';
-          token.value = match[1] || '';
+          type = 'prefix';
+          value = match[1] || '';
         }
         // Try to find a prefixed name. Since it can contain (but not end with) a dot,
         // we always need a non-dot character before deciding it is a prefixed name.
         // Therefore, try inserting a space if we're at the end of the input.
-        else if ((match = this._prefixedName.exec(input)) ||
-                 inputFinished && (match = this._prefixedName.exec(input + ' '))) {
-          token.type = 'prefixed';
-          token.prefix = match[1] || '';
-          token.value = this._unescape(match[2]);
+        else if ((match = this._prefixed.exec(input)) ||
+                 inputFinished && (match = this._prefixed.exec(input + ' '))) {
+          type = 'prefixed';
+          prefix = match[1] || '';
+          value = this._unescape(match[2]);
         }
       }
 
+      // A type token is special: it can only be emitted after an IRI or prefixed name is read.
+      if (this._prevTokenType === '^')
+        type = (type === 'IRI' || type === 'prefixed') ? 'type' : '';
+
       // What if nothing of the above was found?
-      if (match === null) {
+      if (!type) {
         // We could be in streaming mode, and then we just wait for more input to arrive.
         // Otherwise, a syntax error has occurred in the input.
         // One exception: error on an unaccounted linebreak (= not inside a triple-quoted literal).
@@ -348,22 +371,18 @@ N3Lexer.prototype = {
       }
 
       // Emit the parsed token.
-      callback(null, token);
-      this._prevTokenType = token.type;
+      callback(null, { line: line, type: type, value: value, prefix: prefix });
+      this._prevTokenType = type;
 
       // Advance to next part to tokenize.
-      input = input.substr(match[0].length, input.length);
+      input = input.substr(matchLength || match[0].length, input.length);
     }
 
     // Signals the syntax error through the callback
-    function reportSyntaxError(self) {
-      match = self._nonwhitespace.exec(input);
-      self._input = null;
-      callback(new Error('Syntax error: unexpected "' + match[0] + '" on line ' + self._line + '.'));
-    }
+    function reportSyntaxError(self) { callback(self._syntaxError(/^\S*/.exec(input)[0])); }
   },
 
-  // ### `unescape` replaces N3 escape codes by their corresponding characters.
+  // ### `_unescape` replaces N3 escape codes by their corresponding characters.
   _unescape: function (item) {
     try {
       return item.replace(escapeSequence, function (sequence, unicode4, unicode8, escapedChar) {
@@ -377,7 +396,7 @@ N3Lexer.prototype = {
           charCode = parseInt(unicode8, 16);
           if (isNaN(charCode)) throw new Error(); // can never happen (regex), but helps performance
           if (charCode < 0xFFFF) return fromCharCode(charCode);
-          return fromCharCode(0xD800 + ((charCode -= 0x10000) >> 10), 0xDC00 + (charCode & 0x3FF));
+          return fromCharCode(0xD800 + ((charCode -= 0x10000) / 0x400), 0xDC00 + (charCode & 0x3FF));
         }
         else {
           var replacement = escapeReplacements[escapedChar];
@@ -389,6 +408,13 @@ N3Lexer.prototype = {
     }
     catch (error) { return null; }
   },
+
+  // ### `_syntaxError` creates a syntax error for the given issue
+  _syntaxError: function (issue) {
+    this._input = null;
+    return new Error('Syntax error: unexpected "' + issue + '" on line ' + this._line + '.');
+  },
+
 
   // ## Public methods
 
@@ -453,43 +479,58 @@ var RDF_PREFIX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
     RDF_FIRST  = RDF_PREFIX + 'first',
     RDF_REST   = RDF_PREFIX + 'rest';
 
-var absoluteURI = /:/,
+var absoluteIRI = /:/,
     documentPart = /[^\/]*$/,
-    rootURI = /^(?:[^:]+:\/*)?[^\/]*/;
+    rootIRI = /^(?:[^:]+:\/*)?[^\/]*/;
 
 // The next ID for new blank nodes
-var blankNodeCount = 0;
+var blankNodePrefix = 0, blankNodeCount = 0;
 
 // ## Constructor
-function N3Parser(config) {
+function N3Parser(options) {
   if (!(this instanceof N3Parser))
-    return new N3Parser(config);
-
-  // Initialize the parser settings
-  config = config || {};
+    return new N3Parser(options);
   this._tripleStack = [];
-  this._lexer = config.lexer || new N3Lexer();
-  this._blankNodes = Object.create(null);
+  this._graph = null;
 
-  // Set the document URI
-  if (!config.documentURI) {
-    this._baseURI = null;
-    this._baseURIPath = null;
+  // Set the document IRI.
+  options = options || {};
+  if (!options.documentIRI) {
+    this._baseIRI = null;
+    this._baseIRIPath = null;
   }
   else {
-    if (config.documentURI.indexOf('#') > 0)
-      throw new Error('Invalid document URI');
-    this._baseURI = config.documentURI;
-    this._baseURIPath = this._baseURI.replace(documentPart, '');
-    this._baseURIRoot = this._baseURI.match(rootURI)[0];
+    if (options.documentIRI.indexOf('#') > 0)
+      throw new Error('Invalid document IRI');
+    this._baseIRI = options.documentIRI;
+    this._baseIRIPath = this._baseIRI.replace(documentPart, '');
+    this._baseIRIRoot = this._baseIRI.match(rootIRI)[0];
   }
+
+  // Set supported features depending on the format.
+  var format = (typeof options.format === 'string') && options.format.match(/\w*$/)[0].toLowerCase(),
+      isTurtle = format === 'turtle', isTriG = format === 'trig',
+      isNTriples = /triple/.test(format), isNQuads = /quad/.test(format),
+      isLineMode = isNTriples || isNQuads;
+  if (!(this._supportsNamedGraphs = !isTurtle))
+    this._readPredicateOrNamedGraph = this._readPredicate;
+  this._supportsQuads = !(isTurtle || isTriG || isNTriples);
+  // Disable relative IRIs in N-Triples or N-Quads mode
+  if (isLineMode) {
+    this._baseIRI = '';
+    this._resolveIRI = function (token) {
+      this._error('Disallowed relative IRI', token);
+      return this._callback = noop, this._subject = null;
+    };
+  }
+  this._lexer = options.lexer || new N3Lexer({ lineMode: isLineMode });
 }
 
 // ## Private class methods
 
 // ### `_resetBlankNodeIds` restarts blank node identification.
 N3Parser._resetBlankNodeIds = function () {
-  blankNodeCount = 0;
+  blankNodePrefix = blankNodeCount = 0;
 };
 
 N3Parser.prototype = {
@@ -500,6 +541,9 @@ N3Parser.prototype = {
     switch (token.type) {
     // If an EOF token arrives in the top context, signal that we're done.
     case 'eof':
+      if (this._graph !== null)
+        return this._error('Unclosed graph', token);
+      delete this._prefixes._;
       return this._callback(null, null, this._prefixes);
     // It could be a prefix declaration.
     case '@prefix':
@@ -511,10 +555,21 @@ N3Parser.prototype = {
     // It could be a base declaration.
     case '@base':
       this._sparqlStyle = false;
-      return this._readBaseURI;
+      return this._readBaseIRI;
     case 'BASE':
       this._sparqlStyle = true;
-      return this._readBaseURI;
+      return this._readBaseIRI;
+    // It could be a graph.
+    case '{':
+      if (this._supportsNamedGraphs) {
+        this._graph = '';
+        this._subject = null;
+        return this._readSubject;
+      }
+    case 'GRAPH':
+      if (this._supportsNamedGraphs) {
+        return this._readNamedGraphLabel;
+      }
     // Otherwise, the next token must be a subject.
     default:
       return this._readSubject(token);
@@ -523,41 +578,38 @@ N3Parser.prototype = {
 
   // ### `_readSubject` reads a triple's subject.
   _readSubject: function (token) {
+    this._predicate = null;
     switch (token.type) {
     case 'IRI':
-      if (this._baseURI === null || absoluteURI.test(token.value))
+      if (this._baseIRI === null || absoluteIRI.test(token.value))
         this._subject = token.value;
       else
-        this._subject = this._resolveURI(token.value);
+        this._subject = this._resolveIRI(token);
       break;
     case 'prefixed':
-      if (token.prefix === '_') {
-        this._subject = this._blankNodes[token.value] ||
-                        (this._blankNodes[token.value] = '_:b' + blankNodeCount++);
-      }
-      else {
-        var prefix = this._prefixes[token.prefix];
-        if (prefix === undefined)
-          return this._error('Undefined prefix "' + token.prefix + ':"', token);
-        this._subject = prefix + token.value;
-      }
+      var prefix = this._prefixes[token.prefix];
+      if (prefix === undefined)
+        return this._error('Undefined prefix "' + token.prefix + ':"', token);
+      this._subject = prefix + token.value;
       break;
-    case 'bracketopen':
+    case '[':
       // Start a new triple with a new blank node as subject.
       this._subject = '_:b' + blankNodeCount++;
       this._tripleStack.push({ subject: this._subject, predicate: null, object: null, type: 'blank' });
       return this._readBlankNodeHead;
-    case 'liststart':
+    case '(':
       // Start a new list
       this._tripleStack.push({ subject: RDF_NIL, predicate: null, object: null, type: 'list' });
       this._subject = null;
       return this._readListItem;
+    case '}':
+      return this._readPunctuation(token);
     default:
       return this._error('Expected subject but got ' + token.type, token);
     }
-    this._subjectHasPredicate = false;
-    // The next token must be a predicate.
-    return this._readPredicate;
+    // The next token must be a predicate,
+    // or, if the subject was actually a graph IRI, a named graph.
+    return this._readPredicateOrNamedGraph;
   },
 
   // ### `_readPredicate` reads a triple's predicate.
@@ -565,10 +617,10 @@ N3Parser.prototype = {
     switch (token.type) {
     case 'IRI':
     case 'abbreviation':
-      if (this._baseURI === null || absoluteURI.test(token.value))
+      if (this._baseIRI === null || absoluteIRI.test(token.value))
         this._predicate = token.value;
       else
-        this._predicate = this._resolveURI(token.value);
+        this._predicate = this._resolveIRI(token);
       break;
     case 'prefixed':
       if (token.prefix === '_') {
@@ -581,22 +633,20 @@ N3Parser.prototype = {
         this._predicate = prefix + token.value;
       }
       break;
-    case 'bracketclose':
+    case '.':
+    case ']':
+    case '}':
       // Expected predicate didn't come, must have been trailing semicolon.
-      return this._readBlankNodeTail(token, true);
-    case 'dot':
-      // A dot is not allowed if the subject did not have a predicate yet
-      if (!this._subjectHasPredicate)
-        return this._error('Unexpected dot', token);
-      // Expected predicate didn't come, must have been trailing semicolon.
-      return this._readPunctuation(token, true);
-    case 'semicolon':
+      if (this._predicate === null)
+        return this._error('Unexpected ' + token.type, token);
+      this._subject = null;
+      return this._readBlankNodeTail(token);
+    case ';':
       // Extra semicolons can be safely ignored
       return this._readPredicate;
     default:
       return this._error('Expected predicate to follow "' + this._subject + '"', token);
     }
-    this._subjectHasPredicate = true;
     // The next token must be an object.
     return this._readObject;
   },
@@ -605,33 +655,27 @@ N3Parser.prototype = {
   _readObject: function (token) {
     switch (token.type) {
     case 'IRI':
-      if (this._baseURI === null || absoluteURI.test(token.value))
+      if (this._baseIRI === null || absoluteIRI.test(token.value))
         this._object = token.value;
       else
-        this._object = this._resolveURI(token.value);
+        this._object = this._resolveIRI(token);
       break;
     case 'prefixed':
-      if (token.prefix === '_') {
-        this._object = this._blankNodes[token.value] ||
-                       (this._blankNodes[token.value] = '_:b' + blankNodeCount++);
-      }
-      else {
-        var prefix = this._prefixes[token.prefix];
-        if (prefix === undefined)
-          return this._error('Undefined prefix "' + token.prefix + ':"', token);
-        this._object = prefix + token.value;
-      }
+      var prefix = this._prefixes[token.prefix];
+      if (prefix === undefined)
+        return this._error('Undefined prefix "' + token.prefix + ':"', token);
+      this._object = prefix + token.value;
       break;
     case 'literal':
       this._object = token.value;
       return this._readDataTypeOrLang;
-    case 'bracketopen':
+    case '[':
       // Start a new triple with a new blank node as subject.
       var blank = '_:b' + blankNodeCount++;
       this._tripleStack.push({ subject: this._subject, predicate: this._predicate, object: blank, type: 'blank' });
       this._subject = blank;
       return this._readBlankNodeHead;
-    case 'liststart':
+    case '(':
       // Start a new list
       this._tripleStack.push({ subject: this._subject, predicate: this._predicate, object: RDF_NIL, type: 'list' });
       this._subject = null;
@@ -642,25 +686,41 @@ N3Parser.prototype = {
     return this._getTripleEndReader();
   },
 
+  // ### `_readPredicateOrNamedGraph` reads a triple's predicate, or a named graph.
+  _readPredicateOrNamedGraph: function (token) {
+    return token.type === '{' ? this._readGraph(token) : this._readPredicate(token);
+  },
+
+  // ### `_readGraph` reads a graph.
+  _readGraph: function (token) {
+    if (token.type !== '{')
+      return this._error('Expected graph but got ' + token.type, token);
+    // The "subject" we read is actually the GRAPH's label
+    this._graph = this._subject, this._subject = null;
+    return this._readSubject;
+  },
+
   // ### `_readBlankNodeHead` reads the head of a blank node.
   _readBlankNodeHead: function (token) {
-    if (token.type === 'bracketclose')
-      return this._readBlankNodeTail(token, true);
-    else
-      return this._readPredicate(token);
+    if (token.type === ']') {
+      this._subject = null;
+      return this._readBlankNodeTail(token);
+    }
+    this._predicate = null;
+    return this._readPredicate(token);
   },
 
   // ### `_readBlankNodeTail` reads the end of a blank node.
-  _readBlankNodeTail: function (token, empty) {
-    if (token.type !== 'bracketclose')
+  _readBlankNodeTail: function (token) {
+    if (token.type !== ']')
       return this._readPunctuation(token);
 
     // Store blank node triple.
-    if (empty !== true)
-      this._callback(null, { subject: this._subject,
+    if (this._subject !== null)
+      this._callback(null, { subject:   this._subject,
                              predicate: this._predicate,
-                             object: this._object,
-                             context: 'n3/contexts#default' });
+                             object:    this._object,
+                             graph:     this._graph || '' });
 
     // Restore parent triple that contains the blank node.
     var triple = this._tripleStack.pop();
@@ -673,7 +733,8 @@ N3Parser.prototype = {
       return this._getTripleEndReader();
     }
     // The blank node was the subject, so continue reading the predicate.
-    return this._readPredicate;
+    // If the blank node didn't contain any predicates, it could also be the label of a named graph.
+    return this._predicate !== null ? this._readPredicate : this._readPredicateOrNamedGraph;
   },
 
   // ### `_readDataTypeOrLang` reads an _optional_ data type or language.
@@ -682,7 +743,10 @@ N3Parser.prototype = {
     case 'type':
       var value;
       if (token.prefix === '') {
-        value = token.value;
+        if (this._baseIRI === null || absoluteIRI.test(token.value))
+          value = token.value;
+        else
+          value = this._resolveIRI(token);
       }
       else {
         var prefix = this._prefixes[token.prefix];
@@ -714,22 +778,16 @@ N3Parser.prototype = {
       item = token.value;
       break;
     case 'prefixed':
-      if (token.prefix === '_') {
-        item = this._blankNodes[token.value] ||
-                       (this._blankNodes[token.value] = '_:b' + blankNodeCount++);
-      }
-      else {
-        var prefix = this._prefixes[token.prefix];
-        if (prefix === undefined)
-          return this._error('Undefined prefix "' + token.prefix + ':"', token);
-        item = prefix + token.value;
-      }
+      var prefix = this._prefixes[token.prefix];
+      if (prefix === undefined)
+        return this._error('Undefined prefix "' + token.prefix + ':"', token);
+      item = prefix + token.value;
       break;
     case 'literal':
       item = token.value;
       next = this._readDataTypeOrLang;
       break;
-    case 'bracketopen':
+    case '[':
       // Stack the current list triple and start a new triple with a blank node as subject.
       itemHead = '_:b' + blankNodeCount++;
       item     = '_:b' + blankNodeCount++;
@@ -737,23 +795,23 @@ N3Parser.prototype = {
       this._subject = item;
       next = this._readBlankNodeHead;
       break;
-    case 'liststart':
+    case '(':
       // Stack the current list triple and start a new list
       itemHead = '_:b' + blankNodeCount++;
       stack.push({ subject: itemHead, predicate: RDF_FIRST, object: RDF_NIL, type: 'list' });
       this._subject = null;
       next = this._readListItem;
       break;
-    case 'listend':
+    case ')':
       // Restore the parent triple.
       stack.pop();
       // If this list is contained within a parent list, return the membership triple here.
-      // This will be `<parent list elemen>t rdf:first <this list>.`.
+      // This will be `<parent list element> rdf:first <this list>.`.
       if (stack.length !== 0 && stack[stack.length - 1].type === 'list')
-        this._callback(null, { subject: parentTriple.subject,
+        this._callback(null, { subject:   parentTriple.subject,
                                predicate: parentTriple.predicate,
-                               object: parentTriple.object,
-                               context: 'n3/contexts#default' });
+                               object:    parentTriple.object,
+                               graph:     this._graph || '' });
       // Restore the parent triple's subject.
       this._subject = parentTriple.subject;
       // Was this list in the parent triple's subject?
@@ -795,46 +853,80 @@ N3Parser.prototype = {
     }
     else {
       // The rest of the list is in the current head.
-      this._callback(null, { subject: prevItemHead,
+      this._callback(null, { subject:   prevItemHead,
                              predicate: RDF_REST,
-                             object: itemHead,
-                             context: 'n3/contexts#default' });
+                             object:    itemHead,
+                             graph:     this._graph || '' });
     }
     // Add the item's value.
     if (item !== null)
-      this._callback(null, { subject: itemHead,
+      this._callback(null, { subject:   itemHead,
                              predicate: RDF_FIRST,
-                             object: item,
-                             context: 'n3/contexts#default' });
+                             object:    item,
+                             graph:     this._graph || '' });
     return next;
   },
 
   // ### `_readPunctuation` reads punctuation between triples or triple parts.
-  _readPunctuation: function (token, empty) {
-    var next;
+  _readPunctuation: function (token) {
+    var next, subject = this._subject, graph = this._graph;
     switch (token.type) {
+    // A closing brace ends a graph
+    case '}':
+      if (this._graph === null)
+        return this._error('Unexpected graph closing', token);
+      this._graph = null;
     // A dot just ends the statement, without sharing anything with the next.
-    case 'dot':
+    case '.':
+      this._subject = null;
       next = this._readInTopContext;
       break;
     // Semicolon means the subject is shared; predicate and object are different.
-    case 'semicolon':
+    case ';':
       next = this._readPredicate;
       break;
     // Comma means both the subject and predicate are shared; the object is different.
-    case 'comma':
+    case ',':
       next = this._readObject;
       break;
+    // An IRI means this is a quad (only allowed if not already inside a graph).
+    case 'IRI':
+      if (this._supportsQuads && this._graph === null) {
+        if (this._baseIRI === null || absoluteIRI.test(token.value))
+          graph = token.value;
+        else
+          graph = this._resolveIRI(token);
+        subject = this._subject;
+        next = this._readQuadPunctuation;
+        break;
+      }
+    // An prefixed name means this is a quad (only allowed if not already inside a graph).
+    case 'prefixed':
+      if (this._supportsQuads && this._graph === null) {
+        var prefix = this._prefixes[token.prefix];
+        if (prefix === undefined)
+          return this._error('Undefined prefix "' + token.prefix + ':"', token);
+        graph = prefix + token.value;
+        next = this._readQuadPunctuation;
+        break;
+      }
     default:
       return this._error('Expected punctuation to follow "' + this._object + '"', token);
     }
     // A triple has been completed now, so return it.
-    if (!empty)
-      this._callback(null, { subject: this._subject,
+    if (subject !== null)
+      this._callback(null, { subject:   subject,
                              predicate: this._predicate,
-                             object: this._object,
-                             context: 'n3/contexts#default' });
+                             object:    this._object,
+                             graph:     graph || '' });
     return next;
+  },
+
+  // ### `_readQuadPunctuation` reads punctuation after a quad.
+  _readQuadPunctuation: function (token) {
+    if (token.type !== '.')
+      return this._error('Expected dot to follow quad', token);
+    return this._readInTopContext;
   },
 
   // ### `_readPrefix` reads the prefix of a prefix declaration.
@@ -842,36 +934,57 @@ N3Parser.prototype = {
     if (token.type !== 'prefix')
       return this._error('Expected prefix to follow @prefix', token);
     this._prefix = token.value;
-    return this._readPrefixURI;
+    return this._readPrefixIRI;
   },
 
-  // ### `_readPrefixURI` reads the URI of a prefix declaration.
-  _readPrefixURI: function (token) {
+  // ### `_readPrefixIRI` reads the IRI of a prefix declaration.
+  _readPrefixIRI: function (token) {
     if (token.type !== 'IRI')
       return this._error('Expected IRI to follow prefix "' + this._prefix + ':"', token);
-    var prefixURI;
-    if (this._baseURI === null || absoluteURI.test(token.value))
-      prefixURI = token.value;
+    var prefixIRI;
+    if (this._baseIRI === null || absoluteIRI.test(token.value))
+      prefixIRI = token.value;
     else
-      prefixURI = this._resolveURI(token.value);
-    this._prefixes[this._prefix] = prefixURI;
-    this._prefixCallback(this._prefix, prefixURI);
+      prefixIRI = this._resolveIRI(token);
+    this._prefixes[this._prefix] = prefixIRI;
+    this._prefixCallback(this._prefix, prefixIRI);
     return this._readDeclarationPunctuation;
   },
 
-  // ### `_readBaseURI` reads the URI of a base declaration.
-  _readBaseURI: function (token) {
+  // ### `_readBaseIRI` reads the IRI of a base declaration.
+  _readBaseIRI: function (token) {
     if (token.type !== 'IRI')
       return this._error('Expected IRI to follow base declaration', token);
     if (token.value.indexOf('#') > 0)
-      return this._error('Invalid base URI', token);
-    if (this._baseURI === null || absoluteURI.test(token.value))
-      this._baseURI = token.value;
+      return this._error('Invalid base IRI', token);
+    if (this._baseIRI === null || absoluteIRI.test(token.value))
+      this._baseIRI = token.value;
     else
-      this._baseURI = this._resolveURI(token.value);
-    this._baseURIPath = this._baseURI.replace(documentPart, '');
-    this._baseURIRoot = this._baseURI.match(rootURI)[0];
+      this._baseIRI = this._resolveIRI(token);
+    this._baseIRIPath = this._baseIRI.replace(documentPart, '');
+    this._baseIRIRoot = this._baseIRI.match(rootIRI)[0];
     return this._readDeclarationPunctuation;
+  },
+
+  // ### `_readNamedGraphLabel` reads the label of a named graph.
+  _readNamedGraphLabel: function (token) {
+    switch (token.type) {
+    case 'IRI':
+    case 'prefixed':
+      return this._readSubject(token), this._readGraph;
+    case '[':
+      return this._readNamedGraphBlankLabel;
+    default:
+      return this._error('Invalid graph label', token);
+    }
+  },
+
+  // ### `_readNamedGraphLabel` reads a blank node label of a named graph.
+  _readNamedGraphBlankLabel: function (token) {
+    if (token.type !== ']')
+      return this._error('Invalid graph label', token);
+    this._subject = '_:b' + blankNodeCount++;
+    return this._readGraph;
   },
 
   // ### `_readDeclarationPunctuation` reads the punctuation of a declaration.
@@ -880,7 +993,7 @@ N3Parser.prototype = {
     if (this._sparqlStyle)
       return this._readInTopContext(token);
 
-    if (token.type !== 'dot')
+    if (token.type !== '.')
       return this._error('Expected declaration to end with a dot', token);
     return this._readInTopContext;
   },
@@ -904,24 +1017,25 @@ N3Parser.prototype = {
     this._callback(new Error(message + ' at line ' + token.line + '.'));
   },
 
-  // ### `_resolveURI` resolves a URI against a base path
-  _resolveURI: function (uri) {
-    switch (uri[0]) {
-    // An empty relative URI indicates the base URI
+  // ### `_resolveIRI` resolves an IRI token against the base path
+  _resolveIRI: function (token) {
+    var iri = token.value;
+    switch (iri[0]) {
+    // An empty relative IRI indicates the base IRI
     case undefined:
-      return this._baseURI;
-    // Resolve relative fragment URIs against the base URI
+      return this._baseIRI;
+    // Resolve relative fragment IRIs against the base IRI
     case '#':
-      return this._baseURI     + uri;
-    // Resolve relative query string URIs by replacing the query string
+      return this._baseIRI     + iri;
+    // Resolve relative query string IRIs by replacing the query string
     case '?':
-      return this._baseURI.replace(/(?:\?.*)?$/, uri);
-    // Resolve root relative URIs at the root of the base URI
+      return this._baseIRI.replace(/(?:\?.*)?$/, iri);
+    // Resolve root relative IRIs at the root of the base IRI
     case '/':
-      return this._baseURIRoot + uri;
-    // Resolve all other URIs at the base URI's path
+      return this._baseIRIRoot + iri;
+    // Resolve all other IRIs at the base IRI's path
     default:
-      return this._baseURIPath + uri;
+      return this._baseIRIPath + iri;
     }
   },
 
@@ -932,7 +1046,8 @@ N3Parser.prototype = {
     // The read callback is the next function to be executed when a token arrives.
     // We start reading in the top context.
     this._readCallback = this._readInTopContext;
-    this._prefixes = {};
+    this._prefixes = Object.create(null);
+    this._prefixes._ = '_:b' + blankNodePrefix++ + '_';
 
     // If the input argument is not given, shift parameters
     if (typeof input === 'function')
@@ -945,12 +1060,10 @@ N3Parser.prototype = {
     // Execute the read callback when a token arrives.
     var self = this;
     this._lexer.tokenize(input, function (error, token) {
-      if (self._readCallback !== undefined) {
-        if (error !== null)
-          self._callback(error);
-        else
-          self._readCallback = self._readCallback(token);
-      }
+      if (error !== null)
+        self._callback(error), self._callback = noop;
+      else if (self._readCallback !== undefined)
+        self._readCallback = self._readCallback(token);
     });
 
     // If no input was given, it can be added with `addChunk` and ended with `end`
@@ -979,19 +1092,19 @@ var RDF_PREFIX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
     RDF_TYPE   = RDF_PREFIX + 'type';
 
 // Characters in literals that require escaping
-var literalEscape    = /["\\\t\n\r\b\f]/,
-    literalEscapeAll = /["\\\t\n\r\b\f]/g,
-    literalReplacements = { '\\': '\\\\', '"': '\\"', '\t': '\\t',
-                            '\n': '\\n', '\r': '\\r', '\b': '\\b', '\f': '\\f' };
+var escape    = /["\\\t\n\r\b\f\u0000-\u0019\ud800-\udbff]/,
+    escapeAll = /["\\\t\n\r\b\f\u0000-\u0019]|[\ud800-\udbff][\udc00-\udfff]/g,
+    escapeReplacements = { '\\': '\\\\', '"': '\\"', '\t': '\\t',
+                           '\n': '\\n', '\r': '\\r', '\b': '\\b', '\f': '\\f' };
 
 // ## Constructor
-function N3Writer(outputStream, prefixes) {
+function N3Writer(outputStream, options) {
   if (!(this instanceof N3Writer))
-    return new N3Writer(outputStream, prefixes);
+    return new N3Writer(outputStream, options);
 
   // Shift arguments if the first argument is not a stream
   if (outputStream && typeof outputStream.write !== 'function')
-    prefixes = outputStream, outputStream = null;
+    options = outputStream, outputStream = null;
 
   // If no output stream given, send the output as string through the end callback
   if (!outputStream) {
@@ -1002,134 +1115,160 @@ function N3Writer(outputStream, prefixes) {
       callback && callback();
     };
   }
-
   this._outputStream = outputStream;
-  this._prefixURIs = Object.create(null);
-  if (prefixes)
-    this.addPrefixes(prefixes);
+
+  // Initialize writer, depending on the format
+  this._subject = null;
+  options = options || {};
+  if (!(/triple|quad/i).test(options.format)) {
+    this._graph = '';
+    this._prefixIRIs = Object.create(null);
+    options.prefixes && this.addPrefixes(options.prefixes);
+  }
+  else {
+    this._writeTriple = this._writeTripleLine;
+  }
 }
 
 N3Writer.prototype = {
   // ## Private methods
 
-  // ### `_write` writes the arguments to the output stream (last argument is callback)
-  _write: function () {
-    for (var i = 0, l = arguments.length - 2; i <= l; i++)
-      this._outputStream.write(arguments[i], 'utf8', i === l ? arguments[l + 1] : null);
+  // ### `_write` writes the argument to the output stream
+  _write: function (string, callback) {
+    this._outputStream.write(string, 'utf8', callback);
   },
 
-  // ### `_writeUriOrBlankNode` writes a URI or blank node to the output stream
-  _writeUriOrBlankNode: function (uri, done) {
-    // Write blank node
-    if (uri[0] === '_' && uri[1] === ':')
-      return this._write(uri, done);
-
-    // Write prefixed name if possible
-    var prefixMatch = this._prefixRegex.exec(uri);
-    if (prefixMatch)
-      this._write(this._prefixURIs[prefixMatch[1]], prefixMatch[2], done);
-    // Otherwise, just write the URI
-    else
-      this._write('<', uri, '>', done);
-  },
-
-  // ### `_writeLiteral` writes a literal to the output stream
-  _writeLiteral: function (value, type, language, done) {
-    // Escape the literal if necessary
-    if (literalEscape.test(value)) {
-      value = value.replace(literalEscapeAll, function (match) {
-        return literalReplacements[match];
-      });
+    // ### `_writeTriple` writes the triple to the output stream
+  _writeTriple: function (subject, predicate, object, graph, done) {
+    try {
+      // Write the graph's label if it has changed
+      if (this._graph !== graph) {
+        // Close the previous graph and start the new one
+        this._write((this._subject === null ? '' : (this._graph ? '\n}\n' : '.\n')) +
+                    (graph ? this._encodeIriOrBlankNode(graph) + ' {\n' : ''));
+        this._graph = graph, this._subject = null;
+      }
+      // Don't repeat the subject if it's the same
+      if (this._subject === subject) {
+        // Don't repeat the predicate if it's the same
+        if (this._predicate === predicate)
+          this._write(', ' + this._encodeObject(object), done);
+        // Same subject, different predicate
+        else
+          this._write(';\n    ' +
+                      this._encodePredicate(this._predicate = predicate) + ' ' +
+                      this._encodeObject(object), done);
+      }
+      // Different subject; write the whole triple
+      else
+        this._write((this._subject === null ? '' : '.\n') +
+                    this._encodeSubject(this._subject = subject) + ' ' +
+                    this._encodePredicate(this._predicate = predicate) + ' ' +
+                    this._encodeObject(object), done);
     }
+    catch (error) { done && done(error); }
+  },
 
+  // ### `_writeTripleLine` writes the triple or quad to the output stream as a single line
+  _writeTripleLine: function (subject, predicate, object, graph, done) {
+    // Don't use prefixes
+    delete this._prefixMatch;
+    // Write the triple
+    try {
+      this._write(this._encodeIriOrBlankNode(subject) + ' ' +
+                  this._encodeIriOrBlankNode(predicate) + ' ' +
+                  this._encodeObject(object) +
+                  (graph ? ' ' + this._encodeIriOrBlankNode(graph) + '.\n' : '.\n'), done);
+    }
+    catch (error) { done && done(error); }
+  },
+
+  // ### `_encodeIriOrBlankNode` represents an IRI or blank node
+  _encodeIriOrBlankNode: function (iri) {
+    // A blank node is represented as-is
+    if (iri[0] === '_' && iri[1] === ':') return iri;
+    // Escape special characters
+    if (escape.test(iri))
+      iri = iri.replace(escapeAll, characterReplacer);
+    // Try to represent the IRI as prefixed name
+    var prefixMatch = this._prefixRegex.exec(iri);
+    return prefixMatch ? this._prefixIRIs[prefixMatch[1]] + prefixMatch[2] : '<' + iri + '>';
+  },
+
+  // ### `_encodeLiteral` represents a literal
+  _encodeLiteral: function (value, type, language) {
+    // Escape special characters
+    if (escape.test(value))
+      value = value.replace(escapeAll, characterReplacer);
     // Write the literal, possibly with type or language
-    this._write('"', value, '"', type || language ? null : done);
-    if (type) {
-      this._write('^^', null);
-      this._writeUriOrBlankNode(type, done);
-    }
-    else if (language) {
-      this._write('@', language, done);
-    }
+    if (language)
+      return '"' + value + '"@' + language;
+    else if (type)
+      return '"' + value + '"^^' + this._encodeIriOrBlankNode(type);
+    else
+      return '"' + value + '"';
   },
 
-  // ### `_writeSubject` writes a subject to the output stream
-  _writeSubject: function (subject, done) {
+  // ### `_encodeSubject` represents a subject
+  _encodeSubject: function (subject) {
     if (subject[0] === '"')
       throw new Error('A literal as subject is not allowed: ' + subject);
-    this._writeUriOrBlankNode(subject, done);
+    return this._encodeIriOrBlankNode(subject);
   },
 
-  // ### `_writePredicate` writes a predicate to the output stream
-  _writePredicate: function (predicate, done) {
+  // ### `_encodePredicate` represents a predicate
+  _encodePredicate: function (predicate) {
     if (predicate[0] === '"')
       throw new Error('A literal as predicate is not allowed: ' + predicate);
-    if (predicate === RDF_TYPE)
-      this._write('a', done);
-    else
-      this._writeUriOrBlankNode(predicate, done);
+    return predicate === RDF_TYPE ? 'a' : this._encodeIriOrBlankNode(predicate);
   },
 
-  // ### `_writeObject` writes an object to the output stream
-  _writeObject: function (object, done) {
-    var literalMatch = N3LiteralMatcher.exec(object);
-    if (literalMatch !== null)
-      this._writeLiteral(literalMatch[1], literalMatch[2], literalMatch[3], done);
-    else
-      this._writeUriOrBlankNode(object, done);
+  // ### `_encodeObject` represents an object
+  _encodeObject: function (object) {
+    // Represent an IRI or blank node
+    if (object[0] !== '"')
+      return this._encodeIriOrBlankNode(object);
+    // Represent a literal
+    var match = N3LiteralMatcher.exec(object);
+    if (!match) throw new Error('Invalid literal: ' + object);
+    return this._encodeLiteral(match[1], match[2], match[3]);
   },
 
-  // ### `_blockedWrite` replaces `_writer_ after the writer has been closed
+  // ### `_blockedWrite` replaces `_write` after the writer has been closed
   _blockedWrite: function () {
     throw new Error('Cannot write because the writer has been closed.');
   },
 
-  // ### `addTriple` adds the triple to the output stream
-  addTriple: function (subject, predicate, object, done) {
-    // If the triple was given as a triple object, shift parameters
-    if (!object) {
-      done = predicate;
-      object = subject.object;
-      predicate = subject.predicate;
-      subject = subject.subject;
-    }
-    // Write the triple
-    try {
-      // Don't repeat the subject if it's the same
-      if (this._prevSubject === subject) {
-        // Don't repeat the predicate if it's the same
-        if (this._prevPredicate === predicate) {
-          this._write(', ', null);
-        }
-        // Same subject, different predicate
-        else {
-          this._write(';\n    ', null);
-          this._writePredicate(predicate);
-          this._write(' ', null);
 
-          this._prevPredicate = predicate;
-        }
-      }
-      // Different subject; write the whole triple
-      else {
-        // End a possible previous triple
-        if ('_prevSubject' in this)
-          this._write('.\n', null);
-        this._writeSubject(subject);
-        this._write(' ', null);
-        this._writePredicate(predicate);
-        this._write(' ', null);
-
-        this._prevSubject = subject;
-        this._prevPredicate = predicate;
-      }
-      // In all cases, write the object
-      this._writeObject(object, done);
-    }
-    catch (error) {
-      done && done(error);
-    }
+  _writeList: function(subject, predicate, list){
+    this._write((this._subject === null ? '' : '.\n') +
+                this._encodeSubject(this._subject = subject) + ' ' +
+                this._encodePredicate(this._predicate = predicate) 
+                + ' ( ' + list + ' )');
   },
+
+
+
+
+  // ### `addTriple` adds the triple to the output stream
+  addTriple: function (subject, predicate, object, graph, done) {
+    // The triple was given as a triple object, so shift parameters
+    if (!object)
+      this._writeTriple(subject.subject, subject.predicate, subject.object,
+                        subject.graph || '', predicate);
+    // The optional `graph` parameter was not provided
+    else if (typeof graph !== 'string')
+      this._writeTriple(subject, predicate, object, '', graph);
+    // The `graph` parameter was provided
+    else
+      this._writeTriple(subject, predicate, object, graph, done);
+  },
+
+
+  addTripleList: function (subject, predicate, list) {
+    this._writeList(subject, predicate, list);
+  },
+
 
   // ### `addTriples` adds the triples to the output stream
   addTriples: function (triples) {
@@ -1138,9 +1277,9 @@ N3Writer.prototype = {
   },
 
   // ### `addPrefix` adds the prefix to the output stream
-  addPrefix: function (prefix, uri, done) {
+  addPrefix: function (prefix, iri, done) {
     var prefixes = {};
-    prefixes[prefix] = uri;
+    prefixes[prefix] = iri;
     this.addPrefixes(prefixes, done);
   },
 
@@ -1150,40 +1289,40 @@ N3Writer.prototype = {
     var hasPrefixes = false;
     for (var prefix in prefixes) {
       // Verify whether the prefix can be used and does not exist yet
-      var uri = prefixes[prefix];
-      if (/[#\/]$/.test(uri) && this._prefixURIs[uri] !== (prefix += ':')) {
+      var iri = prefixes[prefix];
+      if (/[#\/]$/.test(iri) && this._prefixIRIs[iri] !== (prefix += ':')) {
         hasPrefixes = true;
-        this._prefixURIs[uri] = prefix;
+        this._prefixIRIs[iri] = prefix;
         // Finish a possible pending triple
-        if ('_prevSubject' in this) {
-          this._write('.\n', null);
-          delete this._prevSubject;
+        if (this._subject !== null) {
+          this._write(this._graph ? '\n}\n' : '.\n');
+          this._subject = null, this._graph = '';
         }
         // Write prefix
-        this._write('@prefix ', prefix, ' <', uri, '>.\n', null);
+        this._write('@prefix ' + prefix + ' <' + iri + '>.\n');
       }
     }
     // Recreate the prefix matcher
     if (hasPrefixes) {
-      var prefixURIs = '';
-      for (var prefixURI in this._prefixURIs)
-        prefixURIs += prefixURIs ? '|' + prefixURI : prefixURI;
-      prefixURIs = prefixURIs.replace(/[\]\/\(\)\*\+\?\.\\\$]/g, '\\$&');
-      this._prefixRegex = new RegExp('^(' + prefixURIs + ')([a-zA-Z][\\-_a-zA-Z0-9]*)$');
+      var prefixIRIs = '';
+      for (var prefixIRI in this._prefixIRIs)
+        prefixIRIs += prefixIRIs ? '|' + prefixIRI : prefixIRI;
+      prefixIRIs = prefixIRIs.replace(/[\]\/\(\)\*\+\?\.\\\$]/g, '\\$&');
+      this._prefixRegex = new RegExp('^(' + prefixIRIs + ')([a-zA-Z][\\-_a-zA-Z0-9]*)$');
     }
     // End a prefix block with a newline
     this._write(hasPrefixes ? '\n' : '', done);
   },
 
-  // ### `_prefixRegex` matches an URL that begins with one of the added prefixes
-  _prefixRegex: { exec: function () { return null; } },
+  // ### `_prefixRegex` matches an IRI that begins with one of the added prefixes
+  _prefixRegex: /$0^/,
 
   // ### `end` signals the end of the output stream
   end: function (done) {
     // Finish a possible pending triple
-    if ('_prevSubject' in this) {
-      this._write('.\n', null);
-      delete this._prevSubject;
+    if (this._subject !== null) {
+      this._write(this._graph ? '\n}\n' : '.\n');
+      this._subject = null;
     }
     // Disallow further writing
     this._write = this._blockedWrite;
@@ -1201,49 +1340,66 @@ N3Writer.prototype = {
   },
 };
 
+// Replaces a character by its escaped version
+function characterReplacer(character) {
+  // Replace a single character by its escaped version
+  var result = escapeReplacements[character];
+  if (result === undefined) {
+    // Replace a single character with its 4-bit unicode escape sequence
+    if (character.length === 1) {
+      result = character.charCodeAt(0).toString(16);
+      result = '\\u0000'.substr(0, 6 - result.length) + result;
+    }
+    // Replace a surrogate pair with its 8-bit unicode escape sequence
+    else {
+      result = ((character.charCodeAt(0) - 0xD800) * 0x400 +
+                 character.charCodeAt(1) + 0x2400).toString(16);
+      result = '\\U00000000'.substr(0, 10 - result.length) + result;
+    }
+  }
+  return result;
+}
+
 // ## Exports
 
 // Export the `N3Writer` class as a whole.
 
 N3.Writer = N3Writer;
-// **N3Store** objects store N3 triples with an associated context in memory.
+// **N3Store** objects store N3 triples by graph in memory.
 
 var expandPrefixedName = N3Util.expandPrefixedName;
 
 // ## Constructor
-function N3Store(triples, prefixes) {
+function N3Store(triples, options) {
   if (!(this instanceof N3Store))
-    return new N3Store(triples, prefixes);
+    return new N3Store(triples, options);
 
   // The number of triples is initially zero.
   this._size = 0;
-  // `_contexts` contains subject, predicate, and object indexes per context.
-  this._contexts = Object.create(null);
+  // `_graphs` contains subject, predicate, and object indexes per graph.
+  this._graphs = Object.create(null);
   // `_entities` maps entities such as `http://xmlns.com/foaf/0.1/name` to numbers.
-  // This saves memory, since only the numbers have to be stored in `_contexts`.
+  // This saves memory, since only the numbers have to be stored in `_graphs`.
   this._entities = Object.create(null);
-  this._entities['>>____unused_item_to_make_first_entity_key_non-falsy____<<'] = 0;
+  this._entities['><'] = 0; // Dummy entry, so the first actual key is non-zero
   this._entityCount = 0;
   // `_blankNodeIndex` is the index of the last created blank node that was automatically named
   this._blankNodeIndex = 0;
 
   // Shift parameters if `triples` is not given
-  if (!prefixes && triples && !triples[0])
-    prefixes = triples, triples = null;
+  if (!options && triples && !triples[0])
+    options = triples, triples = null;
 
   // Add triples and prefixes if passed
   this._prefixes = Object.create(null);
-  triples && this.addTriples(triples);
-  prefixes && this.addPrefixes(prefixes);
+  if (options && options.prefixes)
+    this.addPrefixes(options.prefixes);
+  if (triples)
+    this.addTriples(triples);
 }
 
 N3Store.prototype = {
   // ## Public properties
-
-  // `defaultContext` is the default context wherein triples are stored.
-  get defaultContext() {
-    return 'n3/contexts#default';
-  },
 
   // ### `size` returns the number of triples in the store.
   get size() {
@@ -1253,9 +1409,9 @@ N3Store.prototype = {
       return size;
 
     // Calculate the number of triples by counting to the deepest level.
-    var contexts = this._contexts, subjects, subject;
-    for (var contextKey in contexts)
-      for (var subjectKey in (subjects = contexts[contextKey].subjects))
+    var graphs = this._graphs, subjects, subject;
+    for (var graphKey in graphs)
+      for (var subjectKey in (subjects = graphs[graphKey].subjects))
         for (var predicateKey in (subject = subjects[subjectKey]))
           size += Object.keys(subject[predicateKey]).length;
     return this._size = size;
@@ -1291,8 +1447,8 @@ N3Store.prototype = {
   // `name0`, `name1`, and `name2` are the names of the keys at each level,
   // used when reconstructing the resulting triple
   // (for instance: _subject_, _predicate_, and _object_).
-  // Finally, `context` will be the context of the created triples.
-  _findInIndex: function (index0, key0, key1, key2, name0, name1, name2, context) {
+  // Finally, `graph` will be the graph of the created triples.
+  _findInIndex: function (index0, key0, key1, key2, name0, name1, name2, graph) {
     var results = [], entityKeys = Object.keys(this._entities), tmp, index1, index2;
 
     // If a key is specified, use only that part of index 0.
@@ -1311,7 +1467,7 @@ N3Store.prototype = {
             var values = key2 ? (key2 in index2 ? [key2] : []) : Object.keys(index2);
             // Create triples for all items found in index 2.
             for (var l = values.length - 1; l >= 0; l--) {
-              var result = { context: context };
+              var result = { subject: '', predicate: '', object: '', graph: graph };
               result[name0] = entity0;
               result[name1] = entity1;
               result[name2] = entityKeys[values[l]];
@@ -1353,28 +1509,28 @@ N3Store.prototype = {
   // ## Public methods
 
   // ### `addTriple` adds a new N3 triple to the store.
-  addTriple: function (subject, predicate, object, context) {
+  addTriple: function (subject, predicate, object, graph) {
     // Shift arguments if a triple object is given instead of components
     if (!predicate)
-      context = subject.context, object = subject.object,
+      graph = subject.graph, object = subject.object,
         predicate = subject.predicate, subject = subject.subject;
 
-    // Find the context that will contain the triple.
-    context = context || this.defaultContext;
-    var contextItem = this._contexts[context];
-    // Create the context if it doesn't exist yet.
-    if (!contextItem) {
-      contextItem = this._contexts[context] = {
+    // Find the graph that will contain the triple.
+    graph = graph || '';
+    var graphItem = this._graphs[graph];
+    // Create the graph if it doesn't exist yet.
+    if (!graphItem) {
+      graphItem = this._graphs[graph] = {
         subjects: {},
         predicates: {},
         objects: {}
       };
-      // Freezing a context helps subsequent `add` performance,
+      // Freezing a graph helps subsequent `add` performance,
       // and properties will never be modified anyway.
-      Object.freeze(contextItem);
+      Object.freeze(graphItem);
     }
 
-    // Since entities can often be long URIs, we avoid storing them in every index.
+    // Since entities can often be long IRIs, we avoid storing them in every index.
     // Instead, we have a separate index that maps entities to numbers,
     // which are then used as keys in the other indexes.
     var entities = this._entities;
@@ -1382,9 +1538,9 @@ N3Store.prototype = {
     predicate = entities[predicate] || (entities[predicate] = ++this._entityCount);
     object    = entities[object]    || (entities[object]    = ++this._entityCount);
 
-    this._addToIndex(contextItem.subjects,   subject,   predicate, object);
-    this._addToIndex(contextItem.predicates, predicate, object,    subject);
-    this._addToIndex(contextItem.objects,    object,    subject,   predicate);
+    this._addToIndex(graphItem.subjects,   subject,   predicate, object);
+    this._addToIndex(graphItem.predicates, predicate, object,    subject);
+    this._addToIndex(graphItem.objects,    object,    subject,   predicate);
 
     // The cached triple count is now invalid.
     this._size = null;
@@ -1397,8 +1553,8 @@ N3Store.prototype = {
   },
 
   // ### `addPrefix` adds support for querying with the given prefix
-  addPrefix: function (prefix, uri) {
-    this._prefixes[prefix] = uri;
+  addPrefix: function (prefix, iri) {
+    this._prefixes[prefix] = iri;
   },
 
   // ### `addPrefixex` adds support for querying with the given prefixes
@@ -1408,35 +1564,35 @@ N3Store.prototype = {
   },
 
   // ### `removeTriple` removes an N3 triple from the store if it exists.
-  removeTriple: function (subject, predicate, object, context) {
+  removeTriple: function (subject, predicate, object, graph) {
     // Shift arguments if a triple object is given instead of components.
     if (!predicate)
-      context = subject.context, object = subject.object,
+      graph = subject.graph, object = subject.object,
         predicate = subject.predicate, subject = subject.subject;
-    context = context || this.defaultContext;
+    graph = graph || '';
 
     // Find internal identifiers for all components.
-    var contextItem, entities = this._entities, contexts = this._contexts;
+    var graphItem, entities = this._entities, graphs = this._graphs;
     if (!(subject     = entities[subject]))   return;
     if (!(predicate   = entities[predicate])) return;
     if (!(object      = entities[object]))    return;
-    if (!(contextItem = contexts[context]))   return;
+    if (!(graphItem = graphs[graph]))   return;
 
     // Verify that the triple exists.
     var subjects, predicates;
-    if (!(subjects   = contextItem.subjects[subject])) return;
+    if (!(subjects   = graphItem.subjects[subject])) return;
     if (!(predicates = subjects[predicate])) return;
     if (!(object in predicates)) return;
 
     // Remove it from all indexes.
-    this._removeFromIndex(contextItem.subjects,   subject,   predicate, object);
-    this._removeFromIndex(contextItem.predicates, predicate, object,    subject);
-    this._removeFromIndex(contextItem.objects,    object,    subject,   predicate);
+    this._removeFromIndex(graphItem.subjects,   subject,   predicate, object);
+    this._removeFromIndex(graphItem.predicates, predicate, object,    subject);
+    this._removeFromIndex(graphItem.objects,    object,    subject,   predicate);
     if (this._size !== null) this._size--;
 
-    // Remove the context if it is empty.
-    for (subject in contextItem.subjects) return;
-    delete contexts[context];
+    // Remove the graph if it is empty.
+    for (subject in graphItem.subjects) return;
+    delete graphs[graph];
   },
 
   // ### `removeTriples` removes multiple N3 triples from the store.
@@ -1447,28 +1603,28 @@ N3Store.prototype = {
 
   // ### `find` finds a set of triples matching a pattern, expanding prefixes as necessary.
   // Setting `subject`, `predicate`, or `object` to `null` means an _anything_ wildcard.
-  // Setting `context` to `null` means the default context.
-  find: function (subject, predicate, object, context) {
+  // Setting `graph` to `null` means the default graph.
+  find: function (subject, predicate, object, graph) {
     var prefixes = this._prefixes;
-    return this.findByUri(
+    return this.findByIRI(
       expandPrefixedName(subject,   prefixes),
       expandPrefixedName(predicate, prefixes),
       expandPrefixedName(object,    prefixes),
-      expandPrefixedName(context,   prefixes)
+      expandPrefixedName(graph,     prefixes)
     );
   },
 
-  // ### `findByUri` finds a set of triples matching a pattern.
-  // Setting `subject`, `predicate`, or `object` to `null` means an _anything_ wildcard.
-  // Setting `context` to `null` means the default context.
-  findByUri: function (subject, predicate, object, context) {
-    context = context || this.defaultContext;
-    var contextItem = this._contexts[context], entities = this._entities;
+  // ### `findByIRI` finds a set of triples matching a pattern.
+  // Setting `subject`, `predicate`, or `object` to a falsy value means an _anything_ wildcard.
+  // Setting `graph` to a falsy value means the default graph.
+  findByIRI: function (subject, predicate, object, graph) {
+    graph = graph || '';
+    var graphItem = this._graphs[graph], entities = this._entities;
 
-    // If the specified context contain no triples, there are no results.
-    if (!contextItem) return [];
+    // If the specified graph contain no triples, there are no results.
+    if (!graphItem) return [];
 
-    // Translate URIs to internal index keys.
+    // Translate IRIs to internal index keys.
     // Optimization: if the entity doesn't exist, no triples with it exist.
     if (subject   && !(subject   = entities[subject]))   return [];
     if (predicate && !(predicate = entities[predicate])) return [];
@@ -1478,51 +1634,51 @@ N3Store.prototype = {
     if (subject) {
       if (object)
         // If subject and object are given, the object index will be the fastest.
-        return this._findInIndex(contextItem.objects, object, subject, predicate,
-                                 'object', 'subject', 'predicate', context);
+        return this._findInIndex(graphItem.objects, object, subject, predicate,
+                                 'object', 'subject', 'predicate', graph);
       else
         // If only subject and possibly predicate are given, the subject index will be the fastest.
-        return this._findInIndex(contextItem.subjects, subject, predicate, null,
-                                 'subject', 'predicate', 'object', context);
+        return this._findInIndex(graphItem.subjects, subject, predicate, null,
+                                 'subject', 'predicate', 'object', graph);
     }
     else if (predicate)
       // If only predicate and possibly object are given, the predicate index will be the fastest.
-      return this._findInIndex(contextItem.predicates, predicate, object, null,
-                               'predicate', 'object', 'subject', context);
+      return this._findInIndex(graphItem.predicates, predicate, object, null,
+                               'predicate', 'object', 'subject', graph);
     else if (object)
       // If only object is given, the object index will be the fastest.
-      return this._findInIndex(contextItem.objects, object, null, null,
-                               'object', 'subject', 'predicate', context);
+      return this._findInIndex(graphItem.objects, object, null, null,
+                               'object', 'subject', 'predicate', graph);
     else
       // If nothing is given, iterate subjects and predicates first
-      return this._findInIndex(contextItem.subjects, null, null, null,
-                               'subject', 'predicate', 'object', context);
+      return this._findInIndex(graphItem.subjects, null, null, null,
+                               'subject', 'predicate', 'object', graph);
   },
 
   // ### `count` returns the number of triples matching a pattern, expanding prefixes as necessary.
   // Setting `subject`, `predicate`, or `object` to `null` means an _anything_ wildcard.
-  // Setting `context` to `null` means the default context.
-  count: function (subject, predicate, object, context) {
+  // Setting `graph` to `null` means the default graph.
+  count: function (subject, predicate, object, graph) {
     var prefixes = this._prefixes;
-    return this.countByUri(
+    return this.countByIRI(
       expandPrefixedName(subject,   prefixes),
       expandPrefixedName(predicate, prefixes),
       expandPrefixedName(object,    prefixes),
-      expandPrefixedName(context,   prefixes)
+      expandPrefixedName(graph,     prefixes)
     );
   },
 
-  // ### `countByUri` returns the number of triples matching a pattern.
+  // ### `countByIRI` returns the number of triples matching a pattern.
   // Setting `subject`, `predicate`, or `object` to `null` means an _anything_ wildcard.
-  // Setting `context` to `null` means the default context.
-  countByUri: function (subject, predicate, object, context) {
-    context = context || this.defaultContext;
-    var contextItem = this._contexts[context], entities = this._entities;
+  // Setting `graph` to `null` means the default graph.
+  countByIRI: function (subject, predicate, object, graph) {
+    graph = graph || '';
+    var graphItem = this._graphs[graph], entities = this._entities;
 
-    // If the specified context contain no triples, there are no results.
-    if (!contextItem) return 0;
+    // If the specified graph contain no triples, there are no results.
+    if (!graphItem) return 0;
 
-    // Translate URIs to internal index keys.
+    // Translate IRIs to internal index keys.
     // Optimization: if the entity doesn't exist, no triples with it exist.
     if (subject   && !(subject   = entities[subject]))   return 0;
     if (predicate && !(predicate = entities[predicate])) return 0;
@@ -1532,18 +1688,18 @@ N3Store.prototype = {
     if (subject) {
       if (object)
         // If subject and object are given, the object index will be the fastest.
-        return this._countInIndex(contextItem.objects, object, subject, predicate);
+        return this._countInIndex(graphItem.objects, object, subject, predicate);
       else
         // If only subject and possibly predicate are given, the subject index will be the fastest.
-        return this._countInIndex(contextItem.subjects, subject, predicate, object);
+        return this._countInIndex(graphItem.subjects, subject, predicate, object);
     }
     else if (predicate) {
       // If only predicate and possibly object are given, the predicate index will be the fastest.
-      return this._countInIndex(contextItem.predicates, predicate, object, subject);
+      return this._countInIndex(graphItem.predicates, predicate, object, subject);
     }
     else {
       // If only object is possibly given, the object index will be the fastest.
-      return this._countInIndex(contextItem.objects, object, subject, predicate);
+      return this._countInIndex(graphItem.objects, object, subject, predicate);
     }
   },
 
@@ -1557,9 +1713,7 @@ N3Store.prototype = {
         name = suggestedName + index++;
     }
     else {
-      do {
-        name = '_:b' + this._blankNodeIndex++;
-      }
+      do { name = '_:b' + this._blankNodeIndex++; }
       while (this._entities[name]);
     }
     this._entities[name] = this._entityCount++;
