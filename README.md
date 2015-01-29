@@ -44,6 +44,6 @@ Install dependencies with [Bower](http://bower.io/):
     with this program; if not, see <http://www.gnu.org/licenses/>.
 
 ## Contacts
-Further details on the [PRISSMA Project Page](http://wimmics.inria.fr/projects/prissma/), or contact [Luca Costabello](http://luca.costabello.info) directly.
+Further details on the [PRISSMA Project Page](http://wimmics.inria.fr/projects/prissma/), or contact [Luca Costabello](http://luca.costabello.info).
 
 
