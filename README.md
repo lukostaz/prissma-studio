@@ -20,7 +20,6 @@ Install dependencies with [Bower](http://bower.io/):
 
 	$ bower install
 
-Open `index.html` in your favourite browser. PRISSMA Studio is an in-browser app.
 
 ## Demo
 
