@@ -2,7 +2,7 @@ PRISSMA Studio
 ===========
 ### A Prism Designer for PRISSMA
 
-PRISSMA Studio is an in-browser web application that assist [PRISSMA](http://wimmics.inria.fr/projects/prissma) designers in creating Prisms, according to the [PRISSMA vocabulary](ns.inria.fr/prissma/v2/prissma_v2.html).
+PRISSMA Studio is an in-browser web application that creates [PRISSMA](http://wimmics.inria.fr/projects/prissma) Prisms, using the [PRISSMA vocabulary](ns.inria.fr/prissma/v2/prissma_v2.html).
 
 PRISSMA Studio supports designers in the creation of [Fresnel](http://www.w3.org/2005/04/fresnel-info/manual/) Lenses and Formats, and eases the definition of the associated [PRISSMA context](http://ns.inria.fr/prissma/v2/prissma_v2.html#Context).
 
